@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topiku Topimu - Minimalist Headwear</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <header>
+            <div class="container">
+                <nav>
+                    <a href="#" class="logo">TOPIKU TOPIMU</a>
+                    <div class="search-container">
+                        <input type="text" class="search-input" placeholder="Cari topi impianmu..." id="searchInput">
+                    </div>
+                    <div class="cart-icon" id="cartBtn">
+                        KERANJANG <span id="cartCount" class="cart-count">0</span>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <section class="hero">
+            <div class="container">
+                <h1>Mahakarya di Atas Kepala</h1>
+                <p>Minimalisme sinematik yang menemani setiap langkah ambisimu. Didesain untuk mereka yang berani tampil beda dalam kesunyian.</p>
+            </div>
+        </section>
+
+        <section class="products">
+            <div class="container">
+                <div class="grid" id="productGrid">
+                    <!-- Produk akan dirender di sini oleh JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Cart Modal -->
+        <div class="modal" id="cartModal">
+            <div class="modal-content">
+                <span class="close-modal" id="closeModal">&times;</span>
+                <h2>Keranjang Belanja</h2>
+                <div class="cart-items" id="cartItems">
+                    <!-- Item keranjang akan dirender di sini -->
+                </div>
+                <div class="cart-total">
+                    TOTAL: <span id="cartTotalText">Rp 0</span>
+                </div>
+                <button class="btn-add" style="margin-top: 20px;">LANJUT KE PEMBAYARAN</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const products = [
+            { id: 1, name: "Shadow Beanie", price: 150000, img: "SB" },
+            { id: 2, name: "Crimson Snapback", price: 250000, img: "CS" },
+            { id: 3, name: "Void Bucket Hat", price: 200000, img: "VB" },
+            { id: 4, name: "Zenith Cap", price: 180000, img: "ZC" },
+            { id: 5, name: "Phantom Beret", price: 220000, img: "PB" },
+            { id: 6, name: "Obsidian Fedora", price: 350000, img: "OF" }
+        ];
+
+        function renderProducts(productsToRender) {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = productsToRender.map(product => `
+                <div class="product-card">
+                    <div class="product-img">${product.img}</div>
+                    <div class="product-info">
+                        <h3>${product.name}</h3>
+                        <p class="product-price">Rp ${product.price.toLocaleString('id-ID')}</p>
+                        <button class="btn-add" onclick="addToCart(${product.id})">TAMBAH KE KERANJANG</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Initial render
+        renderProducts(products);
+
+        // Cart Logic
+        let cart = [];
+        const cartModal = document.getElementById('cartModal');
+        const cartBtn = document.getElementById('cartBtn');
+        const closeModal = document.getElementById('closeModal');
+        const cartCount = document.getElementById('cartCount');
+        const cartItems = document.getElementById('cartItems');
+        const cartTotalText = document.getElementById('cartTotalText');
+
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const cartItem = cart.find(item => item.id === productId);
+
+            if (cartItem) {
+                cartItem.quantity++;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+            updateCart();
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCart();
+        }
+
+        function updateCart() {
+            // Update Count
+            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartCount.textContent = totalCount;
+
+            // Update Items List
+            cartItems.innerHTML = cart.map(item => `
+                <div class="cart-item">
+                    <div>
+                        <strong>${item.name}</strong> x ${item.quantity}
+                    </div>
+                    <div>
+                        Rp ${(item.price * item.quantity).toLocaleString('id-ID')}
+                        <span style="margin-left: 10px; cursor: pointer; color: #ef4444;" onclick="removeFromCart(${item.id})">Hapus</span>
+                    </div>
+                </div>
+            `).join('');
+
+            // Update Total
+            const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            cartTotalText.textContent = `Rp ${totalAmount.toLocaleString('id-ID')}`;
+        }
+
+        // Modal Controls
+        cartBtn.onclick = () => cartModal.style.display = 'flex';
+        closeModal.onclick = () => cartModal.style.display = 'none';
+        window.onclick = (event) => {
+            if (event.target == cartModal) cartModal.style.display = 'none';
+        }
+
+        // Search Logic
+        const searchInput = document.getElementById('searchInput');
+        searchInput.oninput = (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredProducts = products.filter(p =>
+                p.name.toLowerCase().includes(searchTerm)
+            );
+            renderProducts(filteredProducts);
+        };
+    </script>
+</body>
+</html>
