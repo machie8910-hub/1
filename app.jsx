@@ -1,6 +1,6 @@
 const { useState, useEffect, useMemo, useRef } = React;
 
-
+// Helper to handle Framer Motion UMD
 const Motion = window.Motion || {
   motion: {
     div: (props) => <div {...props} />,
@@ -14,7 +14,7 @@ const Motion = window.Motion || {
 };
 const { motion, AnimatePresence } = Motion;
 
-
+// Mock Data Produk
 const PRODUCTS = [
   {
     id: 1,
@@ -29,6 +29,8 @@ const PRODUCTS = [
     },
     gambar: {
       depan: "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?q=80&w=1000&auto=format&fit=crop",
+      samping: "https://images.unsplash.com/photo-1572307480813-ceb0e59d8325?q=80&w=1000&auto=format&fit=crop",
+      belakang: "https://images.unsplash.com/photo-1556306535-0f09a537f0a3?q=80&w=1000&auto=format&fit=crop"
     }
   },
   {
@@ -44,6 +46,8 @@ const PRODUCTS = [
     },
     gambar: {
       depan: "https://images.unsplash.com/photo-1575425186775-b8de9a427e67?q=80&w=1000&auto=format&fit=crop",
+      samping: "https://images.unsplash.com/photo-1521119989659-a83eee488004?q=80&w=1000&auto=format&fit=crop",
+      belakang: "https://images.unsplash.com/photo-1459156212016-c812468e2115?q=80&w=1000&auto=format&fit=crop"
     }
   },
   {
@@ -59,6 +63,8 @@ const PRODUCTS = [
     },
     gambar: {
       depan: "https://images.unsplash.com/photo-1521369909029-2afed882baee?q=80&w=1000&auto=format&fit=crop",
+      samping: "https://images.unsplash.com/photo-1611601322175-ef8ec8c85f01?q=80&w=1000&auto=format&fit=crop",
+      belakang: "https://images.unsplash.com/photo-1534215754734-18e55d13e346?q=80&w=1000&auto=format&fit=crop"
     }
   },
   {
@@ -74,6 +80,8 @@ const PRODUCTS = [
     },
     gambar: {
       depan: "https://images.unsplash.com/photo-1596455607563-ad6193f76b17?q=80&w=1000&auto=format&fit=crop",
+      samping: "https://images.unsplash.com/photo-1556306535-0f09a537f0a3?q=80&w=1000&auto=format&fit=crop",
+      belakang: "https://images.unsplash.com/photo-1572307480813-ceb0e59d8325?q=80&w=1000&auto=format&fit=crop"
     }
   },
   {
@@ -89,6 +97,8 @@ const PRODUCTS = [
     },
     gambar: {
       depan: "https://images.unsplash.com/photo-1618354691792-d1d42acfd860?q=80&w=1000&auto=format&fit=crop",
+      samping: "https://images.unsplash.com/photo-1621072156002-e2fcced0b170?q=80&w=1000&auto=format&fit=crop",
+      belakang: "https://images.unsplash.com/photo-1618354691792-d1d42acfd860?q=80&w=1000&auto=format&fit=crop"
     }
   },
   {
@@ -104,6 +114,8 @@ const PRODUCTS = [
     },
     gambar: {
       depan: "https://images.unsplash.com/photo-1514327605112-b887c0e61c0a?q=80&w=1000&auto=format&fit=crop",
+      samping: "https://images.unsplash.com/photo-1517423568366-8b83523034fd?q=80&w=1000&auto=format&fit=crop",
+      belakang: "https://images.unsplash.com/photo-1514327605112-b887c0e61c0a?q=80&w=1000&auto=format&fit=crop"
     }
   },
   {
@@ -119,6 +131,8 @@ const PRODUCTS = [
     },
     gambar: {
       depan: "https://images.unsplash.com/photo-1572307480813-ceb0e59d8325?q=80&w=1000&auto=format&fit=crop",
+      samping: "https://images.unsplash.com/photo-1533055640609-24b498dfd74c?q=80&w=1000&auto=format&fit=crop",
+      belakang: "https://images.unsplash.com/photo-1572307480813-ceb0e59d8325?q=80&w=1000&auto=format&fit=crop"
     }
   },
   {
@@ -134,6 +148,8 @@ const PRODUCTS = [
     },
     gambar: {
       depan: "https://images.unsplash.com/photo-1556306535-0f09a537f0a3?q=80&w=1000&auto=format&fit=crop",
+      samping: "https://images.unsplash.com/photo-1596455607563-ad6193f76b17?q=80&w=1000&auto=format&fit=crop",
+      belakang: "https://images.unsplash.com/photo-1556306535-0f09a537f0a3?q=80&w=1000&auto=format&fit=crop"
     }
   }
 ];
@@ -149,6 +165,7 @@ const App = () => {
   const [activeAngle, setActiveAngle] = useState("depan");
   const [scrollPos, setScrollPos] = useState(0);
 
+  // Recommendations Loop Logic (3 items)
   const recs = useMemo(() => PRODUCTS.slice(0, 3), []);
   const [activeRec, setActiveRec] = useState(0);
 
@@ -219,6 +236,7 @@ const App = () => {
         </div>
       </nav>
 
+      {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden bg-black">
         <div className="absolute inset-0 opacity-50" style={{ backgroundImage: `url('https://images.unsplash.com/photo-1533055640609-24b498dfd74c?q=80&w=1920&auto=format&fit=crop')`, backgroundPosition: 'center', backgroundSize: 'cover', transform: `translateY(${scrollPos * 0.5}px)` }} />
         <div className="relative z-10 text-center px-4">
@@ -230,6 +248,7 @@ const App = () => {
         </div>
       </section>
 
+      {/* Rekomendasi 3 - Loop Slider */}
       <section className="py-24 px-6 bg-white overflow-hidden">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
@@ -274,6 +293,7 @@ const App = () => {
         </div>
       </section>
 
+      {/* Katalog Produk (3 Kolom) */}
       <section id="produk" className="py-20 px-6 bg-gray-50">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
@@ -309,6 +329,7 @@ const App = () => {
         </div>
       </section>
 
+      {/* Footer */}
       <footer className="bg-brand text-white py-16 px-6">
         <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-12">
           <div><h4 className="text-3xl font-black mb-6">TKTM</h4><p className="text-gray-400">Topiku Topimu. Platform e-commerce topi nomor satu dengan kualitas tanpa kompromi.</p></div>
@@ -327,6 +348,7 @@ const App = () => {
         </div>
       </footer>
 
+      {/* Menu Drawer (Mobile) */}
       <AnimatePresence>
         {isMenuOpen && (
           <>
@@ -362,6 +384,96 @@ const App = () => {
         )}
       </AnimatePresence>
 
+      {/* Cart Drawer */}
+      <AnimatePresence>
+        {isCartOpen && (
+          <>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsCartOpen(false)} className="fixed inset-0 bg-black/60 z-[60] backdrop-blur-sm" />
+            <motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} className="fixed right-0 top-0 h-full w-full max-w-md bg-white z-[70] shadow-2xl p-8 flex flex-col">
+              <div className="flex justify-between items-center mb-8">
+                <h3 className="text-2xl font-bold">Keranjang</h3>
+                <button onClick={() => setIsCartOpen(false)}><LucideIcon name="x" className="w-6 h-6" /></button>
+              </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredProducts.map(product => (
+              <motion.div layout key={product.id} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all group">
+                <div className="relative aspect-square overflow-hidden cursor-pointer" onClick={() => { setSelectedProduct(product); setActiveAngle("depan"); }}>
+                  <img src={product.gambar.depan} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                  <div className="absolute top-4 right-4 bg-white/90 p-2 rounded-full shadow-lg"><LucideIcon name="info" className="w-5 h-5" /></div>
+                </div>
+                <div className="p-6">
+                  <p className="text-xs text-gray-400 font-bold uppercase">{product.kategori}</p>
+                  <h4 className="text-lg font-bold mt-1 mb-2">{product.nama}</h4>
+                  <p className="text-accent font-black text-xl mb-4">Rp {product.harga.toLocaleString('id-ID')}</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button onClick={() => addToCart(product)} className="bg-gray-100 text-brand py-2.5 rounded-xl font-bold text-sm hover:bg-brand hover:text-white transition-all">Keranjang</button>
+                    <button onClick={() => buyNowWA(product)} className="bg-green-500 text-white py-2.5 rounded-xl font-bold text-sm hover:bg-green-600 transition-all">Beli Sekarang</button>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-brand text-white py-16 px-6">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-12">
+          <div><h4 className="text-3xl font-black mb-6">TKTM</h4><p className="text-gray-400">Topiku Topimu. Platform e-commerce topi nomor satu dengan kualitas tanpa kompromi.</p></div>
+          <div>
+            <h5 className="font-bold mb-6">Kontak</h5>
+            <div className="space-y-4 text-gray-400 text-sm">
+              <p className="flex items-center gap-2"><LucideIcon name="phone" className="w-4 h-4" /> {WA_NUMBER}</p>
+              <p className="flex items-center gap-2"><LucideIcon name="mail" className="w-4 h-4" /> machie8910@gmail.com</p>
+              <p className="flex items-center gap-2"><LucideIcon name="map-pin" className="w-4 h-4" /> Banten, Indonesia</p>
+            </div>
+          </div>
+          <div>
+            <h5 className="font-bold mb-6">Metode Pembayaran</h5>
+            <p className="text-gray-400 text-sm">Pembayaran dilakukan secara aman melalui konfirmasi WhatsApp dengan berbagai pilihan Bank dan E-Wallet.</p>
+          </div>
+        </div>
+      </footer>
+
+      {/* Menu Drawer (Mobile) */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsMenuOpen(false)} className="fixed inset-0 bg-black/60 z-[80] backdrop-blur-sm md:hidden" />
+            <motion.div initial={{ x: "-100%" }} animate={{ x: 0 }} exit={{ x: "-100%" }} className="fixed left-0 top-0 h-full w-full max-w-xs bg-white z-[90] shadow-2xl p-8 flex flex-col md:hidden">
+              <div className="flex justify-between items-center mb-10">
+                <h1 className="text-2xl font-black tracking-tighter text-brand">TKTM</h1>
+                <button onClick={() => setIsMenuOpen(false)}><LucideIcon name="x" className="w-6 h-6" /></button>
+              </div>
+
+              <nav className="flex flex-col gap-6 mb-auto">
+                <a href="#" onClick={() => setIsMenuOpen(false)} className="text-xl font-bold hover:text-accent transition-colors">Beranda</a>
+                <a href="#produk" onClick={() => setIsMenuOpen(false)} className="text-xl font-bold hover:text-accent transition-colors">Koleksi</a>
+                <a href="#footer" onClick={() => setIsMenuOpen(false)} className="text-xl font-bold hover:text-accent transition-colors">Tentang Kami</a>
+              </nav>
+
+              <div className="pt-10 border-t">
+                <h5 className="font-bold mb-4 text-sm uppercase tracking-widest text-gray-400">Hubungi Kami</h5>
+                <div className="space-y-4 text-brand">
+                  <a href={`https://wa.me/${WA_NUMBER.replace('+', '')}`} className="flex items-center gap-3 font-medium hover:text-accent">
+                    <LucideIcon name="phone" className="w-5 h-5 text-accent" /> {WA_NUMBER}
+                  </a>
+                  <p className="flex items-center gap-3 font-medium">
+                    <LucideIcon name="mail" className="w-5 h-5 text-accent" /> machie8910@gmail.com
+                  </p>
+                  <p className="flex items-center gap-3 font-medium">
+                    <LucideIcon name="map-pin" className="w-5 h-5 text-accent" /> Banten, Indonesia
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Cart Drawer */}
       <AnimatePresence>
         {isCartOpen && (
           <>
@@ -391,6 +503,7 @@ const App = () => {
         )}
       </AnimatePresence>
 
+      {/* Product Modal (With Angle Change) */}
       <AnimatePresence>
         {selectedProduct && (
           <>
