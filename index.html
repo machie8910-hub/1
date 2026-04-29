@@ -4,29 +4,312 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TKTM - Topiku Topimu</title>
-
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="style.css">
-
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-gray-50 text-gray-900">
-    <div id="root"></div>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">TKTM</div>
+                <div class="nav-actions">
+                    <div class="search-container">
+                        <input type="text" id="searchInput" class="search-input" placeholder="Cari topi...">
+                    </div>
+                    <button id="cartBtn" class="cart-btn">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span id="cartCount" class="cart-count">0</span>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
 
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <section class="hero">
+        <div class="container">
+            <h1>Topiku Topimu</h1>
+            <p>Koleksi eksklusif untuk melengkapi gaya harianmu. TKTM hadir untuk kenyamanan dan estetika tanpa kompromi.</p>
+            <a href="#katalog" class="btn-primary">Jelajahi Koleksi</a>
+        </div>
+    </section>
 
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <main class="container" id="katalog">
+        <h2 class="section-title">Katalog Terbaru</h2>
+        <div id="productsGrid" class="products-grid">
+            <!-- Products will be injected here by JavaScript -->
+        </div>
+    </main>
 
-    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="logo" style="margin-bottom: 20px;">TKTM</div>
+                    <p>Platform e-commerce topi nomor satu dengan kualitas tanpa kompromi dan estetika modern.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Kontak</h4>
+                    <ul>
+                        <li><i class="fas fa-phone"></i> +6288973262022</li>
+                        <li><i class="fas fa-envelope"></i> machie8910@gmail.com</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Banten, Indonesia</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Pembayaran</h4>
+                    <p>Aman melalui konfirmasi WhatsApp. Berbagai pilihan Bank dan E-Wallet tersedia.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
 
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Cart Drawer -->
+    <div id="overlay" class="overlay"></div>
+    <div id="cartDrawer" class="cart-drawer">
+        <div class="cart-header">
+            <h3>Keranjang</h3>
+            <button id="closeCart" class="close-cart"><i class="fas fa-times"></i></button>
+        </div>
+        <div id="cartItems" class="cart-items">
+            <!-- Cart items will be injected here -->
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total</span>
+                <span id="cartTotal">Rp 0</span>
+            </div>
+            <button id="checkoutBtn" class="checkout-btn">Checkout via WhatsApp</button>
+        </div>
+    </div>
 
-    <script type="text/babel" src="App.jsx"></script>
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script>
+        const PRODUCTS = [
+            {
+                id: 1,
+                nama: "Classic Snapback",
+                harga: 150000,
+                kategori: "Snapback",
+                gambar: "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?q=80&w=1000&auto=format&fit=crop"
+            },
+            {
+                id: 2,
+                nama: "Urban Beanie",
+                harga: 120000,
+                kategori: "Beanie",
+                gambar: "https://images.unsplash.com/photo-1575425186775-b8de9a427e67?q=80&w=1000&auto=format&fit=crop"
+            },
+            {
+                id: 3,
+                nama: "Trucker Mesh",
+                harga: 135000,
+                kategori: "Trucker",
+                gambar: "https://images.unsplash.com/photo-1521369909029-2afed882baee?q=80&w=1000&auto=format&fit=crop"
+            },
+            {
+                id: 4,
+                nama: "Vintage Dad Hat",
+                harga: 145000,
+                kategori: "Dad Hat",
+                gambar: "https://images.unsplash.com/photo-1596455607563-ad6193f76b17?q=80&w=1000&auto=format&fit=crop"
+            },
+            {
+                id: 5,
+                nama: "Explorer Bucket Hat",
+                harga: 160000,
+                kategori: "Bucket Hat",
+                gambar: "https://images.unsplash.com/photo-1618354691792-d1d42acfd860?q=80&w=1000&auto=format&fit=crop"
+            },
+            {
+                id: 6,
+                nama: "Classic Fedora",
+                harga: 250000,
+                kategori: "Fedora",
+                gambar: "https://images.unsplash.com/photo-1514327605112-b887c0e61c0a?q=80&w=1000&auto=format&fit=crop"
+            },
+            {
+                id: 7,
+                nama: "Performance Sport Cap",
+                harga: 175000,
+                kategori: "Sport",
+                gambar: "https://images.unsplash.com/photo-1572307480813-ceb0e59d8325?q=80&w=1000&auto=format&fit=crop"
+            },
+            {
+                id: 8,
+                nama: "Premium Corduroy",
+                harga: 185000,
+                kategori: "Lifestyle",
+                gambar: "https://images.unsplash.com/photo-1556306535-0f09a537f0a3?q=80&w=1000&auto=format&fit=crop"
+            }
+        ];
+
+        let cart = [];
+
+        function toggleCart() {
+            const drawer = document.getElementById('cartDrawer');
+            const overlay = document.getElementById('overlay');
+            drawer.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
+
+        function addToCart(productId) {
+            const product = PRODUCTS.find(p => p.id === productId);
+            const cartItem = cart.find(item => item.id === productId);
+
+            if (cartItem) {
+                cartItem.qty++;
+            } else {
+                cart.push({ ...product, qty: 1 });
+            }
+
+            updateCartUI();
+            showToast(`${product.nama} ditambahkan ke keranjang`);
+        }
+
+        function checkout() {
+            if (cart.length === 0) {
+                showToast('Keranjang Anda kosong');
+                return;
+            }
+
+            // In a real scenario, this would generate a WA message
+            const WA_NUMBER = "6288973262022";
+            let message = "Halo TKTM, saya ingin membeli:\n";
+            cart.forEach(item => {
+                message += `- ${item.nama} (${item.qty}x)\n`;
+            });
+            const total = cart.reduce((sum, item) => sum + (item.harga * item.qty), 0);
+            message += `\nTotal: ${formatCurrency(total)}`;
+
+            // Simulate checkout success
+            showToast('Pembelian berhasil');
+            cart = [];
+            updateCartUI();
+
+            // Wait a bit before closing cart and opening WA
+            setTimeout(() => {
+                toggleCart();
+                window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
+            }, 1000);
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCartUI();
+        }
+
+        function showToast(message) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                toast.style.transition = '0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function updateCartUI() {
+            const cartCount = document.getElementById('cartCount');
+            const cartItems = document.getElementById('cartItems');
+            const cartTotal = document.getElementById('cartTotal');
+
+            // Update Count
+            const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+            cartCount.textContent = totalItems;
+
+            // Render Items
+            cartItems.innerHTML = '';
+            let total = 0;
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p style="text-align: center; color: var(--color-text-muted); padding: 20px;">Keranjang kosong</p>';
+            } else {
+                cart.forEach(item => {
+                    const itemTotal = item.harga * item.qty;
+                    total += itemTotal;
+
+                    const itemEl = document.createElement('div');
+                    itemEl.className = 'cart-item';
+                    itemEl.innerHTML = `
+                        <img src="${item.gambar}" alt="${item.nama}" class="cart-item-img">
+                        <div class="cart-item-details">
+                            <h4>${item.nama}</h4>
+                            <p>${item.qty} x ${formatCurrency(item.harga)}</p>
+                        </div>
+                        <button class="remove-item" onclick="removeFromCart(${item.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    `;
+                    cartItems.appendChild(itemEl);
+                });
+            }
+
+            cartTotal.textContent = formatCurrency(total);
+        }
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(amount).replace('Rp', 'Rp ');
+        }
+
+        function renderProducts(productsToRender) {
+            const productsGrid = document.getElementById('productsGrid');
+            productsGrid.innerHTML = '';
+
+            productsToRender.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.innerHTML = `
+                    <img src="${product.gambar}" alt="${product.nama}" class="product-image">
+                    <div class="product-info">
+                        <div class="product-category">${product.kategori}</div>
+                        <h3 class="product-name">${product.nama}</h3>
+                        <div class="product-price">${formatCurrency(product.harga)}</div>
+                        <button class="add-to-cart-btn" onclick="addToCart(${product.id})">
+                            <i class="fas fa-plus"></i> Tambah ke Keranjang
+                        </button>
+                    </div>
+                `;
+                productsGrid.appendChild(productCard);
+            });
+        }
+
+        // Search functionality
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                const filtered = PRODUCTS.filter(product =>
+                    product.nama.toLowerCase().includes(searchTerm) ||
+                    product.kategori.toLowerCase().includes(searchTerm)
+                );
+                renderProducts(filtered);
+            });
+        }
+
+        // Initial render
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProducts(PRODUCTS);
+            setupSearch();
+
+            // Setup Cart Events
+            document.getElementById('cartBtn').addEventListener('click', toggleCart);
+            document.getElementById('closeCart').addEventListener('click', toggleCart);
+            document.getElementById('overlay').addEventListener('click', toggleCart);
+            document.getElementById('checkoutBtn').addEventListener('click', checkout);
+        });
+    </script>
 </body>
 </html>
