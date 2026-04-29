@@ -67,9 +67,11 @@
                 <span>Total:</span>
                 <span id="total-price">Rp 0</span>
             </div>
-            <button class="btn" style="width: 100%;">Checkout</button>
+            <button class="btn" style="width: 100%;" onclick="checkout()">Checkout</button>
         </div>
     </div>
+
+    <div id="notification-container" class="notification-container"></div>
 
     <footer>
         <div class="container">
@@ -133,6 +135,24 @@
         });
 
         // Keranjang Belanja
+        function showNotification(message) {
+            const container = document.getElementById('notification-container');
+            const toast = document.createElement('div');
+            toast.className = 'notification-toast';
+            toast.innerText = message;
+
+            container.appendChild(toast);
+
+            // Trigger animation
+            setTimeout(() => toast.classList.add('show'), 10);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
         function addToCart(productId) {
             const product = products.find(p => p.id === productId);
             const existingItem = cart.find(item => item.id === productId);
@@ -144,7 +164,19 @@
             }
 
             updateCart();
-            openCart();
+            showNotification(`${product.name} ditambahkan ke keranjang`);
+        }
+
+        function checkout() {
+            if (cart.length === 0) {
+                showNotification("Keranjang Anda masih kosong");
+                return;
+            }
+
+            showNotification("Pembelian berhasil! Terima kasih telah berbelanja.");
+            cart = [];
+            updateCart();
+            setTimeout(closeCart, 1500);
         }
 
         function removeFromCart(productId) {
