@@ -4,29 +4,513 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TKTM - Topiku Topimu</title>
-
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="style.css">
-
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-gray-50 text-gray-900">
-    <div id="root"></div>
+<body>
+    <nav id="navbar">
+        <div class="container">
+            <a href="#" class="logo">TK<span>TM</span></a>
+            <div class="nav-icons">
+                <button class="nav-icon" id="cart-btn">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="cart-count" id="cart-count-badge">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
 
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Topiku <span>Topimu</span></h1>
+            <p>Koleksi eksklusif untuk melengkapi gaya harianmu. TKTM hadir untuk kenyamanan dan estetika.</p>
+            <a href="#katalog" class="btn">Jelajahi Koleksi</a>
+        </div>
+    </section>
 
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <section id="katalog">
+        <div class="container">
+            <div class="section-title">
+                <h2>Katalog Terbaru</h2>
+                <div class="accent-line"></div>
+            </div>
 
-    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+            <div class="search-container">
+                <input type="text" id="search-input" class="search-input" placeholder="Cari topi impianmu...">
+            </div>
 
-    <script src="https://unpkg.com/lucide@latest"></script>
+            <div class="product-grid" id="product-grid">
+                <!-- Products will be injected here -->
+            </div>
+        </div>
+    </section>
 
-    <script type="text/babel" src="App.jsx"></script>
+    <section class="recommendations">
+        <div class="container">
+            <div class="section-title">
+                <h2>Rekomendasi Untukmu</h2>
+                <div class="accent-line"></div>
+            </div>
+            <div class="recommendation-slider" id="recommendation-slider">
+                <!-- Recommendations injected here -->
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>TKTM</h4>
+                    <p>Platform e-commerce topi nomor satu dengan kualitas tanpa kompromi.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Kontak</h4>
+                    <p><i class="fa-solid fa-phone"></i> +62 889 7326 2022</p>
+                    <p><i class="fa-solid fa-envelope"></i> machie8910@gmail.com</p>
+                    <p><i class="fa-solid fa-location-dot"></i> Banten, Indonesia</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Pembayaran</h4>
+                    <p>Mendukung berbagai metode pembayaran aman melalui konfirmasi WhatsApp.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                &copy; 2023 TKTM - Topiku Topimu. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cart Drawer -->
+    <div class="drawer-overlay" id="drawer-overlay"></div>
+    <div class="drawer" id="cart-drawer">
+        <div class="drawer-header">
+            <h3>Keranjang</h3>
+            <button class="close-drawer" id="close-cart"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="cart-items" id="cart-items">
+            <!-- Cart items injected here -->
+        </div>
+        <div class="cart-footer">
+            <div class="total-price">
+                <span>Total</span>
+                <span id="cart-total">Rp 0</span>
+            </div>
+            <button class="btn" style="width: 100%;" onclick="checkout()">Checkout via WhatsApp</button>
+        </div>
+    </div>
+
+    <!-- Product Modal -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal" id="product-modal">
+            <button class="modal-close" id="close-modal"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-left">
+                <div class="main-img-container">
+                    <img id="modal-main-img" src="" alt="">
+                </div>
+                <div class="angle-selector" id="angle-selector">
+                    <!-- Angle buttons injected here -->
+                </div>
+            </div>
+            <div class="modal-right">
+                <span class="kategori" id="modal-kategori"></span>
+                <h3 id="modal-nama"></h3>
+                <div class="harga" id="modal-harga"></div>
+                <p class="deskripsi" id="modal-deskripsi"></p>
+                <div class="info-grid" id="modal-info">
+                    <!-- Info rows injected here -->
+                </div>
+                <button class="btn" id="modal-add-btn" style="width: 100%;">Tambah ke Keranjang</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const PRODUCTS = [
+            {
+                id: 1,
+                nama: "Classic Snapback",
+                harga: 150000,
+                kategori: "Snapback",
+                deskripsi: "Topi snapback klasik dengan desain minimalis namun elegan. Cocok untuk penggunaan sehari-hari maupun acara kasual.",
+                info: {
+                    bahan: "Cotton Twill Premium",
+                    ukuran: "All Size (Adjustable)",
+                    fitur: "Flat brim, 6 panels, Adjustable snap closure"
+                },
+                gambar: {
+                    depan: "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?q=80&w=1000&auto=format&fit=crop",
+                    samping: "https://images.unsplash.com/photo-1572307480813-ceb0e59d8325?q=80&w=1000&auto=format&fit=crop",
+                    belakang: "https://images.unsplash.com/photo-1556306535-0f09a537f0a3?q=80&w=1000&auto=format&fit=crop"
+                }
+            },
+            {
+                id: 2,
+                nama: "Urban Beanie",
+                harga: 120000,
+                kategori: "Beanie",
+                deskripsi: "Beanie rajut hangat dengan material lembut yang tidak gatal di kulit. Pilihan tepat untuk cuaca dingin atau gaya streetwear.",
+                info: {
+                    bahan: "Acrylic Knit Wool",
+                    ukuran: "Stretch (One size fits most)",
+                    fitur: "Soft texture, Breathable, Foldable cuff"
+                },
+                gambar: {
+                    depan: "https://images.unsplash.com/photo-1575425186775-b8de9a427e67?q=80&w=1000&auto=format&fit=crop",
+                    samping: "https://images.unsplash.com/photo-1521119989659-a83eee488004?q=80&w=1000&auto=format&fit=crop",
+                    belakang: "https://images.unsplash.com/photo-1459156212016-c812468e2115?q=80&w=1000&auto=format&fit=crop"
+                }
+            },
+            {
+                id: 3,
+                nama: "Trucker Mesh",
+                harga: 135000,
+                kategori: "Trucker",
+                deskripsi: "Topi trucker dengan jaring di bagian belakang untuk sirkulasi udara maksimal. Nyaman digunakan di bawah sinar matahari.",
+                info: {
+                    bahan: "Polyester Mesh & Cotton",
+                    ukuran: "All Size (Adjustable)",
+                    fitur: "Breathable mesh back, Curved brim, Snap closure"
+                },
+                gambar: {
+                    depan: "https://images.unsplash.com/photo-1521369909029-2afed882baee?q=80&w=1000&auto=format&fit=crop",
+                    samping: "https://images.unsplash.com/photo-1611601322175-ef8ec8c85f01?q=80&w=1000&auto=format&fit=crop",
+                    belakang: "https://images.unsplash.com/photo-1534215754734-18e55d13e346?q=80&w=1000&auto=format&fit=crop"
+                }
+            },
+            {
+                id: 4,
+                nama: "Vintage Dad Hat",
+                harga: 145000,
+                kategori: "Dad Hat",
+                deskripsi: "Topi bergaya vintage dengan kesan 'washed' yang memberikan karakter unik. Material katun berkualitas tinggi.",
+                info: {
+                    bahan: "Washed Cotton",
+                    ukuran: "All Size (Metal strap)",
+                    fitur: "Unstructured crown, Curved peak, Vintage look"
+                },
+                gambar: {
+                    depan: "https://images.unsplash.com/photo-1596455607563-ad6193f76b17?q=80&w=1000&auto=format&fit=crop",
+                    samping: "https://images.unsplash.com/photo-1556306535-0f09a537f0a3?q=80&w=1000&auto=format&fit=crop",
+                    belakang: "https://images.unsplash.com/photo-1572307480813-ceb0e59d8325?q=80&w=1000&auto=format&fit=crop"
+                }
+            },
+            {
+                id: 5,
+                nama: "Explorer Bucket Hat",
+                harga: 160000,
+                kategori: "Bucket Hat",
+                deskripsi: "Topi bucket yang trendi dan serbaguna, memberikan perlindungan maksimal dari sinar matahari dengan gaya yang santai.",
+                info: {
+                    bahan: "Canvas Cotton",
+                    ukuran: "Medium/Large",
+                    fitur: "Wide brim, Foldable, Lightweight"
+                },
+                gambar: {
+                    depan: "https://images.unsplash.com/photo-1618354691792-d1d42acfd860?q=80&w=1000&auto=format&fit=crop",
+                    samping: "https://images.unsplash.com/photo-1621072156002-e2fcced0b170?q=80&w=1000&auto=format&fit=crop",
+                    belakang: "https://images.unsplash.com/photo-1618354691792-d1d42acfd860?q=80&w=1000&auto=format&fit=crop"
+                }
+            },
+            {
+                id: 6,
+                nama: "Classic Fedora",
+                harga: 250000,
+                kategori: "Fedora",
+                deskripsi: "Sentuhan klasik untuk penampilan formal maupun semi-formal. Dibuat dengan presisi untuk kenyamanan sepanjang hari.",
+                info: {
+                    bahan: "Wool Felt",
+                    ukuran: "Fixed (58cm)",
+                    fitur: "Stiff brim, Ribbon band, Elegant lining"
+                },
+                gambar: {
+                    depan: "https://images.unsplash.com/photo-1514327605112-b887c0e61c0a?q=80&w=1000&auto=format&fit=crop",
+                    samping: "https://images.unsplash.com/photo-1517423568366-8b83523034fd?q=80&w=1000&auto=format&fit=crop",
+                    belakang: "https://images.unsplash.com/photo-1514327605112-b887c0e61c0a?q=80&w=1000&auto=format&fit=crop"
+                }
+            },
+            {
+                id: 7,
+                nama: "Performance Sport Cap",
+                harga: 175000,
+                kategori: "Sport",
+                deskripsi: "Topi olahraga dengan teknologi 'moisture-wicking' untuk menjaga kepala tetap kering saat beraktivitas berat.",
+                info: {
+                    bahan: "Micro-Polyester",
+                    ukuran: "All Size (Adjustable)",
+                    fitur: "Breathable, Sweatband, Reflective detail"
+                },
+                gambar: {
+                    depan: "https://images.unsplash.com/photo-1572307480813-ceb0e59d8325?q=80&w=1000&auto=format&fit=crop",
+                    samping: "https://images.unsplash.com/photo-1533055640609-24b498dfd74c?q=80&w=1000&auto=format&fit=crop",
+                    belakang: "https://images.unsplash.com/photo-1572307480813-ceb0e59d8325?q=80&w=1000&auto=format&fit=crop"
+                }
+            },
+            {
+                id: 8,
+                nama: "Premium Corduroy",
+                harga: 185000,
+                kategori: "Lifestyle",
+                deskripsi: "Topi corduroy dengan tekstur unik yang memberikan kesan retro namun tetap modern. Pilihan gaya untuk semua musim.",
+                info: {
+                    bahan: "Premium Corduroy",
+                    ukuran: "All Size (Metal Buckle)",
+                    fitur: "Soft texture, Durable, Retro design"
+                },
+                gambar: {
+                    depan: "https://images.unsplash.com/photo-1556306535-0f09a537f0a3?q=80&w=1000&auto=format&fit=crop",
+                    samping: "https://images.unsplash.com/photo-1596455607563-ad6193f76b17?q=80&w=1000&auto=format&fit=crop",
+                    belakang: "https://images.unsplash.com/photo-1556306535-0f09a537f0a3?q=80&w=1000&auto=format&fit=crop"
+                }
+            }
+        ];
+
+        const WA_NUMBER = "6288973262022";
+        let cart = [];
+        let searchTerm = "";
+        let selectedProduct = null;
+        let activeAngle = "depan";
+
+        // DOM Elements
+        const productGrid = document.getElementById('product-grid');
+        const searchInput = document.getElementById('search-input');
+        const cartBtn = document.getElementById('cart-btn');
+        const cartDrawer = document.getElementById('cart-drawer');
+        const drawerOverlay = document.getElementById('drawer-overlay');
+        const closeCart = document.getElementById('close-cart');
+        const cartItemsContainer = document.getElementById('cart-items');
+        const cartTotal = document.getElementById('cart-total');
+        const cartCountBadge = document.getElementById('cart-count-badge');
+        const modalOverlay = document.getElementById('modal-overlay');
+        const closeModal = document.getElementById('close-modal');
+        const modalMainImg = document.getElementById('modal-main-img');
+        const angleSelector = document.getElementById('angle-selector');
+        const modalKategori = document.getElementById('modal-kategori');
+        const modalNama = document.getElementById('modal-nama');
+        const modalHarga = document.getElementById('modal-harga');
+        const modalDeskripsi = document.getElementById('modal-deskripsi');
+        const modalInfo = document.getElementById('modal-info');
+        const modalAddBtn = document.getElementById('modal-add-btn');
+        const navbar = document.getElementById('navbar');
+
+        // Logic functions
+        function addToCart(productId) {
+            const product = PRODUCTS.find(p => p.id === productId);
+            const existing = cart.find(item => item.id === productId);
+            if (existing) {
+                existing.qty += 1;
+            } else {
+                cart.push({ ...product, qty: 1 });
+            }
+            showToast(`Berhasil menambahkan ${product.nama} ke keranjang`);
+            updateCart();
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCart();
+        }
+
+        function updateCart() {
+            cartItemsContainer.innerHTML = '';
+            let total = 0;
+            let count = 0;
+
+            cart.forEach(item => {
+                total += item.harga * item.qty;
+                count += item.qty;
+
+                const itemEl = document.createElement('div');
+                itemEl.className = 'cart-item';
+                itemEl.innerHTML = `
+                    <img src="${item.gambar.depan}" class="cart-item-img">
+                    <div class="cart-item-info">
+                        <h5>${item.nama}</h5>
+                        <p>${item.qty} x Rp ${item.harga.toLocaleString('id-ID')}</p>
+                    </div>
+                    <button class="remove-item" onclick="removeFromCart(${item.id})">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                `;
+                cartItemsContainer.appendChild(itemEl);
+            });
+
+            cartTotal.innerText = `Rp ${total.toLocaleString('id-ID')}`;
+            cartCountBadge.innerText = count;
+            cartCountBadge.style.display = count > 0 ? 'flex' : 'none';
+        }
+
+        function checkout() {
+            if (cart.length === 0) return;
+
+            let message = "Halo TKTM, saya ingin memesan:\n\n";
+            let total = 0;
+            cart.forEach(item => {
+                message += `- ${item.nama} (${item.qty}x) - Rp ${(item.harga * item.qty).toLocaleString('id-ID')}\n`;
+                total += item.harga * item.qty;
+            });
+            message += `\nTotal: Rp ${total.toLocaleString('id-ID')}`;
+
+            const url = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank');
+
+            cart = [];
+            updateCart();
+            toggleCart(false);
+            showToast("Pembelian berhasil!");
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerText = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 100);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function renderProducts() {
+            productGrid.innerHTML = '';
+            const filtered = PRODUCTS.filter(p =>
+                p.nama.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                p.kategori.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+
+            filtered.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'product-card animate-in';
+                card.onclick = () => openModal(product);
+                card.innerHTML = `
+                    <div class="product-image">
+                        <img src="${product.gambar.depan}" alt="${product.nama}">
+                    </div>
+                    <div class="product-info">
+                        <span class="product-kategori">${product.kategori}</span>
+                        <h4 class="product-nama">${product.nama}</h4>
+                        <p class="product-harga">Rp ${product.harga.toLocaleString('id-ID')}</p>
+                        <div class="product-actions">
+                            <button class="btn btn-sm" onclick="event.stopPropagation(); addToCart(${product.id})">Keranjang</button>
+                            <button class="btn btn-sm btn-secondary" onclick="event.stopPropagation(); openModalById(${product.id})">Detail</button>
+                        </div>
+                    </div>
+                `;
+                productGrid.appendChild(card);
+            });
+        }
+
+        function openModalById(id) {
+            const product = PRODUCTS.find(p => p.id === id);
+            if (product) openModal(product);
+        }
+
+        function openModal(product) {
+            selectedProduct = product;
+            activeAngle = 'depan';
+
+            modalKategori.innerText = product.kategori;
+            modalNama.innerText = product.nama;
+            modalHarga.innerText = `Rp ${product.harga.toLocaleString('id-ID')}`;
+            modalDeskripsi.innerText = product.deskripsi;
+
+            modalInfo.innerHTML = '';
+            Object.entries(product.info).forEach(([key, value]) => {
+                const row = document.createElement('div');
+                row.className = 'info-row';
+                row.innerHTML = `<span>${key.charAt(0).toUpperCase() + key.slice(1)}</span><span>${value}</span>`;
+                modalInfo.appendChild(row);
+            });
+
+            updateModalImg();
+
+            angleSelector.innerHTML = '';
+            Object.keys(product.gambar).forEach(angle => {
+                const btn = document.createElement('button');
+                btn.className = `angle-btn ${angle === activeAngle ? 'active' : ''}`;
+                btn.onclick = () => {
+                    activeAngle = angle;
+                    updateModalImg();
+                    document.querySelectorAll('.angle-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                };
+                btn.innerHTML = `<img src="${product.gambar[angle]}">`;
+                angleSelector.appendChild(btn);
+            });
+
+            modalAddBtn.onclick = () => {
+                addToCart(product.id);
+                toggleModal(false);
+            };
+
+            toggleModal(true);
+        }
+
+        function updateModalImg() {
+            modalMainImg.src = selectedProduct.gambar[activeAngle];
+        }
+
+        function toggleCart(show) {
+            cartDrawer.classList.toggle('open', show);
+            drawerOverlay.style.display = show ? 'block' : 'none';
+            document.body.style.overflow = show ? 'hidden' : '';
+        }
+
+        function toggleModal(show) {
+            modalOverlay.style.display = show ? 'flex' : 'none';
+            document.body.style.overflow = show ? 'hidden' : '';
+        }
+
+        // Event Listeners
+        searchInput.oninput = (e) => {
+            searchTerm = e.target.value;
+            renderProducts();
+        };
+
+        cartBtn.onclick = () => toggleCart(true);
+        closeCart.onclick = () => toggleCart(false);
+        drawerOverlay.onclick = () => toggleCart(false);
+
+        closeModal.onclick = () => toggleModal(false);
+        modalOverlay.onclick = (e) => {
+            if (e.target === modalOverlay) toggleModal(false);
+        };
+
+        window.onscroll = () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        };
+
+        function renderRecommendations() {
+            const slider = document.getElementById('recommendation-slider');
+            slider.innerHTML = '';
+            // Just take a random sample of 5 products
+            const recs = [...PRODUCTS].sort(() => 0.5 - Math.random()).slice(0, 5);
+
+            recs.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'recommendation-card';
+                card.onclick = () => openModal(product);
+                card.innerHTML = `
+                    <img src="${product.gambar.depan}" alt="${product.nama}">
+                    <div class="info">
+                        <h5>${product.nama}</h5>
+                        <p>Rp ${product.harga.toLocaleString('id-ID')}</p>
+                    </div>
+                `;
+                slider.appendChild(card);
+            });
+        }
+
+        // Initial calls
+        renderProducts();
+        renderRecommendations();
+        updateCart();
+    </script>
 </body>
 </html>
