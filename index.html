@@ -3,30 +3,397 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TKTM - Topiku Topimu</title>
-
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" href="style.css">
-
+    <title>Topiku Topimu - Minimalist Headwear</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-    </style>
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-gray-50 text-gray-900">
-    <div id="root"></div>
+<body class="dark-theme">
+    <header class="header">
+        <div class="container navbar">
+            <div class="logo">
+                <a href="/">TOPIKU TOPIMU</a>
+            </div>
+            <div class="nav-actions">
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Cari topi...">
+                    <i class="fas fa-search"></i>
+                </div>
+                <button class="cart-btn" onclick="toggleCart()">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cartBadge" class="badge">0</span>
+                </button>
+                <button class="mobile-menu-btn mobile-only" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
 
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <main>
+        <section class="hero">
+            <div class="container hero-content animate-in">
+                <h1>TEMUKAN GAYAMU</h1>
+                <p>Koleksi topi eksklusif dengan desain minimalis dan kualitas premium.</p>
+                <a href="#shop" class="btn btn-primary">Lihat Koleksi</a>
+            </div>
+        </section>
 
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+        <section id="shop" class="shop-section">
+            <div class="container">
+                <h2 class="section-title">Katalog Produk</h2>
+                <div id="productGrid" class="product-grid">
+                    <!-- Products will be rendered here by JS -->
+                </div>
+            </div>
+        </section>
+    </main>
 
-    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h3>TOPIKU TOPIMU</h3>
+                    <p>Minimalist Headwear Store</p>
+                </div>
+                <div class="footer-contact">
+                    <h4>Kontak</h4>
+                    <p><i class="fas fa-phone"></i> +6288973262022</p>
+                    <p><i class="fas fa-envelope"></i> hello@topikutopimu.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Topiku Topimu. Semua Hak Dilindungi.</p>
+            </div>
+        </div>
+    </footer>
 
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Mobile Navigation -->
+    <div id="mobileNav" class="mobile-nav">
+        <div class="mobile-nav-header">
+            <h3>MENU</h3>
+            <button class="close-btn" onclick="toggleMobileMenu()">&times;</button>
+        </div>
+        <ul class="mobile-nav-links">
+            <li><a href="/" onclick="toggleMobileMenu()">Home</a></li>
+            <li><a href="#shop" onclick="toggleMobileMenu()">Katalog</a></li>
+            <li><a href="#" onclick="toggleMobileMenu(); toggleCart();">Keranjang</a></li>
+        </ul>
+    </div>
+    <div id="navOverlay" class="overlay" onclick="toggleMobileMenu()"></div>
 
-    <script type="text/babel" src="App.jsx"></script>
+    <!-- Cart Sidebar -->
+    <div id="cartSidebar" class="cart-sidebar">
+        <div class="cart-header">
+            <h3>Keranjang</h3>
+            <button class="close-btn" onclick="toggleCart()">&times;</button>
+        </div>
+        <div id="cartItems" class="cart-items">
+            <!-- Cart items will be rendered here -->
+        </div>
+        <div class="cart-footer">
+            <div class="total-price">
+                <span>Total:</span>
+                <span id="totalAmount">Rp 0</span>
+            </div>
+            <button class="btn btn-block btn-accent" onclick="checkout()">Checkout via WhatsApp</button>
+        </div>
+    </div>
+    <div id="cartOverlay" class="overlay" onclick="toggleCart()"></div>
+
+    <!-- Modal Container -->
+    <div id="modalOverlay" class="overlay" onclick="closeModal()"></div>
+    <div id="productModal" class="modal">
+        <!-- Modal content will be injected by JS -->
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script>
+        const CONFIG = {
+            whatsappNumber: "6288973262022",
+            brandName: "Topiku Topimu"
+        };
+
+        const PRODUCTS = [
+            {
+                id: 1,
+                nama: "Classic Snapback",
+                harga: 150000,
+                kategori: "Snapback",
+                deskripsi: "Topi snapback klasik dengan desain minimalis namun elegan. Cocok untuk penggunaan sehari-hari maupun acara kasual.",
+                gambar: [
+                    "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?q=80&w=1000&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1572307480813-ceb0e59d8325?q=80&w=1000&auto=format&fit=crop"
+                ]
+            },
+            {
+                id: 2,
+                nama: "Urban Beanie",
+                harga: 120000,
+                kategori: "Beanie",
+                deskripsi: "Beanie rajut hangat dengan material lembut yang tidak gatal di kulit. Pilihan tepat untuk cuaca dingin atau gaya streetwear.",
+                gambar: [
+                    "https://images.unsplash.com/photo-1575425186775-b8de9a427e67?q=80&w=1000&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1631541909061-71e349d1f203?q=80&w=1000&auto=format&fit=crop"
+                ]
+            },
+            {
+                id: 3,
+                nama: "Trucker Mesh",
+                harga: 135000,
+                kategori: "Trucker",
+                deskripsi: "Topi trucker dengan jaring di bagian belakang untuk sirkulasi udara maksimal. Nyaman digunakan di bawah sinar matahari.",
+                gambar: [
+                    "https://images.unsplash.com/photo-1521369909029-2afed882baee?q=80&w=1000&auto=format&fit=crop"
+                ]
+            },
+            {
+                id: 4,
+                nama: "Vintage Dad Hat",
+                harga: 145000,
+                kategori: "Dad Hat",
+                deskripsi: "Topi bergaya vintage dengan kesan 'washed' yang memberikan karakter unik. Material katun berkualitas tinggi.",
+                gambar: [
+                    "https://images.unsplash.com/photo-1596455607563-ad6193f76b17?q=80&w=1000&auto=format&fit=crop"
+                ]
+            },
+            {
+                id: 5,
+                nama: "Explorer Bucket Hat",
+                harga: 160000,
+                kategori: "Bucket Hat",
+                deskripsi: "Topi bucket yang trendi dan serbaguna, memberikan perlindungan maksimal dari sinar matahari dengan gaya yang santai.",
+                gambar: [
+                    "https://images.unsplash.com/photo-1618354691792-d1d42acfd860?q=80&w=1000&auto=format&fit=crop"
+                ]
+            },
+            {
+                id: 6,
+                nama: "Classic Fedora",
+                harga: 250000,
+                kategori: "Fedora",
+                deskripsi: "Sentuhan klasik untuk penampilan formal maupun semi-formal. Dibuat dengan presisi untuk kenyamanan sepanjang hari.",
+                gambar: [
+                    "https://images.unsplash.com/photo-1514327605112-b887c0e61c0a?q=80&w=1000&auto=format&fit=crop"
+                ]
+            }
+        ];
+
+        function formatRupiah(number) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
+        }
+
+        function renderProducts(productsToRender) {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = '';
+
+            productsToRender.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'product-card animate-in';
+
+                const mainImage = Array.isArray(product.gambar) ? product.gambar[0] : product.gambar;
+
+                card.innerHTML = `
+                    <div class="product-image" onclick="openModalById(${product.id})">
+                        <img src="${mainImage}" alt="${product.nama}">
+                    </div>
+                    <div class="product-info">
+                        <p class="product-category" style="color: var(--text-secondary); font-size: 0.8rem; text-transform: uppercase;">${product.kategori}</p>
+                        <h3 class="product-name">${product.nama}</h3>
+                        <p class="product-price">${formatRupiah(product.harga)}</p>
+                        <button class="btn btn-primary btn-block" onclick="addToCart(${product.id})">
+                            <i class="fas fa-cart-plus"></i> Tambah ke Keranjang
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Search Logic
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase();
+                const filtered = PRODUCTS.filter(p =>
+                    p.nama.toLowerCase().includes(term) ||
+                    p.kategori.toLowerCase().includes(term)
+                );
+                renderProducts(filtered);
+            });
+        }
+
+        // Cart State
+        let cart = [];
+
+        function toggleCart() {
+            const sidebar = document.getElementById('cartSidebar');
+            const overlay = document.getElementById('cartOverlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('open');
+        }
+
+        function addToCart(productId) {
+            const product = PRODUCTS.find(p => p.id === productId);
+            const existingItem = cart.find(item => item.id === productId);
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+
+            updateCartUI();
+            showToast(`Added ${product.nama} to cart`);
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const cartItems = document.getElementById('cartItems');
+            const cartBadge = document.getElementById('cartBadge');
+            const totalAmount = document.getElementById('totalAmount');
+
+            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const totalPrice = cart.reduce((sum, item) => sum + (item.harga * item.quantity), 0);
+
+            cartBadge.textContent = totalCount;
+            totalAmount.textContent = formatRupiah(totalPrice);
+
+            cartItems.innerHTML = '';
+            cart.forEach(item => {
+                const itemEl = document.createElement('div');
+                itemEl.className = 'cart-item';
+                const img = Array.isArray(item.gambar) ? item.gambar[0] : item.gambar;
+                itemEl.innerHTML = `
+                    <img src="${img}" alt="${item.nama}" class="cart-item-img">
+                    <div class="cart-item-info">
+                        <h4>${item.nama}</h4>
+                        <p>${item.quantity} x ${formatRupiah(item.harga)}</p>
+                        <button onclick="removeFromCart(${item.id})" style="background:none; border:none; color:var(--accent-color); cursor:pointer; font-size:0.8rem; margin-top:5px;">Remove</button>
+                    </div>
+                `;
+                cartItems.appendChild(itemEl);
+            });
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p style="text-align:center; color:var(--text-secondary); margin-top:20px;">Keranjang kosong</p>';
+            }
+        }
+
+        function checkout() {
+            if (cart.length === 0) {
+                showToast('Keranjang masih kosong!');
+                return;
+            }
+
+            let message = `Halo ${CONFIG.brandName}, saya ingin memesan:\n\n`;
+
+            cart.forEach(item => {
+                message += `- ${item.nama} (${item.quantity}x) - ${formatRupiah(item.harga * item.quantity)}\n`;
+            });
+
+            const total = cart.reduce((sum, item) => sum + (item.harga * item.quantity), 0);
+            message += `\nTotal: ${formatRupiah(total)}`;
+
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://wa.me/${CONFIG.whatsappNumber}?text=${encodedMessage}`, '_blank');
+
+            // Clear cart after checkout
+            cart = [];
+            updateCartUI();
+            toggleCart();
+            showToast('Pembelian berhasil! Pesanan Anda dikirim ke WhatsApp.', 'success');
+        }
+
+        // Modal Logic
+        function openModalById(productId) {
+            const product = PRODUCTS.find(p => p.id === productId);
+            if (!product) return;
+
+            const modal = document.getElementById('productModal');
+            const overlay = document.getElementById('modalOverlay');
+            const images = Array.isArray(product.gambar) ? product.gambar : [product.gambar];
+
+            modal.innerHTML = `
+                <div style="flex: 1; min-height: 300px; display: flex; flex-direction: column;">
+                    <img id="mainModalImg" src="${images[0]}" alt="${product.nama}" class="main-modal-img">
+                    ${images.length > 1 ? `
+                        <div class="thumbnail-row">
+                            ${images.map((img, idx) => `
+                                <img src="${img}" class="thumbnail-img ${idx === 0 ? 'active' : ''}"
+                                     onclick="updateModalMainImage(this, '${img}')">
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+                <div style="flex: 1; padding: 40px; display: flex; flex-direction: column; justify-content: center; position: relative;">
+                    <button onclick="closeModal()" style="position: absolute; top: 20px; right: 20px; background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;">&times;</button>
+                    <span style="color: var(--accent-color); font-weight: 700; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px;">${product.kategori}</span>
+                    <h2 style="font-size: 2.5rem; margin: 10px 0;">${product.nama}</h2>
+                    <p style="font-size: 1.5rem; font-weight: 700; margin-bottom: 20px;">${formatRupiah(product.harga)}</p>
+                    <p style="color: var(--text-secondary); margin-bottom: 30px; line-height: 1.8;">${product.deskripsi}</p>
+                    <button class="btn btn-primary" onclick="addToCart(${product.id}); closeModal();">Tambah ke Keranjang</button>
+                </div>
+            `;
+
+            modal.classList.add('open');
+            overlay.classList.add('open');
+        }
+
+        function updateModalMainImage(thumb, imgSrc) {
+            document.getElementById('mainModalImg').src = imgSrc;
+            document.querySelectorAll('.thumbnail-img').forEach(t => t.classList.remove('active'));
+            thumb.classList.add('active');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('productModal');
+            const overlay = document.getElementById('modalOverlay');
+            modal.classList.remove('open');
+            overlay.classList.remove('open');
+        }
+
+        // Toast Logic
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            if (type === 'success') toast.style.borderLeftColor = '#10b981';
+            toast.textContent = message;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Mobile Menu
+        function toggleMobileMenu() {
+            const nav = document.getElementById('mobileNav');
+            const overlay = document.getElementById('navOverlay');
+            nav.classList.toggle('open');
+            overlay.classList.toggle('open');
+        }
+
+        // Initial render
+        window.addEventListener('DOMContentLoaded', () => {
+            renderProducts(PRODUCTS);
+            setupSearch();
+        });
+    </script>
 </body>
 </html>
