@@ -3,30 +3,645 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TKTM - Topiku Topimu</title>
+    <title>Topiku Topimu | Koleksi Topi Eksklusif</title>
 
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome v6.4.0 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <link rel="stylesheet" href="style.css">
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-    </style>
 </head>
-<body class="bg-gray-50 text-gray-900">
-    <div id="root"></div>
+<body class="bg-[#0a0a0a] text-white selection:bg-[#e11d48] selection:text-white">
 
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-20 right-6 z-[100] flex flex-col gap-3 pointer-events-none"></div>
 
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed top-0 w-full z-50 transition-all duration-300 py-4 px-6 md:px-12 flex justify-between items-center">
+        <div class="nav-left flex items-center gap-6">
+            <button id="menu-toggle" class="md:hidden text-2xl hover:text-[#e11d48] transition-colors">
+                <i class="fa-solid fa-bars-staggered"></i>
+            </button>
+            <a href="#" class="brand-logo text-2xl font-black tracking-tighter">
+                TOPIKU <span class="text-[#e11d48]">TOPIMU</span>
+            </a>
+        </div>
 
-    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+        <div class="nav-center hidden md:flex items-center gap-8 font-semibold text-sm uppercase tracking-widest">
+            <a href="#" class="hover:text-[#e11d48] transition-colors">Beranda</a>
+            <a href="#koleksi" class="hover:text-[#e11d48] transition-colors">Koleksi</a>
+            <a href="#footer" class="hover:text-[#e11d48] transition-colors">Tentang Kami</a>
+        </div>
 
-    <script src="https://unpkg.com/lucide@latest"></script>
+        <div class="nav-right flex items-center gap-6">
+            <div class="search-box relative hidden sm:block">
+                <input type="text" id="product-search" placeholder="Cari..." class="bg-white/10 border border-white/20 rounded-full py-1.5 px-4 text-sm focus:outline-none focus:border-[#e11d48] transition-all w-32 focus:w-48">
+                <i class="fa-solid fa-magnifying-glass absolute right-4 top-1/2 -translate-y-1/2 text-white/40 text-xs"></i>
+            </div>
+            <button id="cart-toggle" class="relative text-xl hover:text-[#e11d48] transition-colors">
+                <i class="fa-solid fa-bag-shopping"></i>
+                <span id="cart-count" class="absolute -top-2 -right-2 bg-[#e11d48] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center opacity-0 transition-opacity">0</span>
+            </button>
+        </div>
+    </nav>
 
-    <script type="text/babel" src="App.jsx"></script>
+    <!-- Mobile Drawer -->
+    <div id="mobile-drawer-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60] opacity-0 pointer-events-none transition-opacity duration-300"></div>
+    <div id="mobile-drawer" class="fixed left-0 top-0 h-full w-4/5 max-w-sm bg-[#0a0a0a] z-[70] -translate-x-full transition-transform duration-500 ease-in-out p-10 flex flex-col">
+        <div class="flex justify-between items-center mb-12">
+            <span class="text-xl font-black">MENU</span>
+            <button id="menu-close" class="text-2xl hover:text-[#e11d48] transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <nav class="flex flex-col gap-8 text-2xl font-bold uppercase">
+            <a href="#" class="mobile-link hover:text-[#e11d48] transition-colors">Beranda</a>
+            <a href="#koleksi" class="mobile-link hover:text-[#e11d48] transition-colors">Koleksi</a>
+            <a href="#footer" class="mobile-link hover:text-[#e11d48] transition-colors">Tentang Kami</a>
+        </nav>
+        <div class="mt-auto pt-10 border-t border-white/10">
+            <p class="text-white/40 text-sm mb-4 tracking-widest uppercase">Hubungi Kami</p>
+            <a href="https://wa.me/6288973262022" class="text-lg font-semibold flex items-center gap-3">
+                <i class="fa-brands fa-whatsapp text-[#e11d48]"></i> +62 889 7326 2022
+            </a>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="relative h-screen flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1533055640609-24b498dfd74c?q=80&w=1920&auto=format&fit=crop" alt="Hero Background" class="w-full h-full object-cover opacity-30">
+            <div class="absolute inset-0 bg-gradient-to-b from-[#0a0a0a] via-transparent to-[#0a0a0a]"></div>
+        </div>
+        <div class="relative z-10 text-center px-6 animate-in">
+            <h2 class="text-6xl md:text-9xl font-black tracking-tighter mb-4 italic">STYLE <span class="text-[#e11d48]">DEFINED</span></h2>
+            <p class="text-lg md:text-2xl text-white/60 max-w-2xl mx-auto mb-10 font-light tracking-wide uppercase">Eksplorasi estetika urban melalui koleksi topi premium kami.</p>
+            <a href="#koleksi" class="inline-block bg-[#e11d48] text-white font-black py-4 px-10 rounded-full hover:bg-white hover:text-black transition-all duration-300 transform hover:scale-105 uppercase tracking-widest text-sm">
+                Jelajahi Koleksi
+            </a>
+        </div>
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce opacity-40">
+            <i class="fa-solid fa-chevron-down text-2xl"></i>
+        </div>
+    </section>
+
+    <!-- Product Grid -->
+    <section id="koleksi" class="py-32 px-6 md:px-12">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+                <div>
+                    <span class="text-[#e11d48] font-bold tracking-[0.3em] uppercase text-xs mb-3 block">Urban Selection</span>
+                    <h3 class="text-4xl md:text-5xl font-black uppercase tracking-tighter">Katalog <span class="text-white/20">Terbaru</span></h3>
+                </div>
+                <div class="flex gap-4">
+                    <div class="relative sm:hidden w-full">
+                        <input type="text" id="product-search-mobile" placeholder="Cari topi..." class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-[#e11d48]">
+                    </div>
+                </div>
+            </div>
+
+            <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                <!-- Products injected by JS -->
+            </div>
+
+            <div id="no-results" class="hidden py-20 text-center">
+                <i class="fa-solid fa-magnifying-glass text-4xl text-white/20 mb-4"></i>
+                <p class="text-white/40">Produk tidak ditemukan.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cart Overlay -->
+    <div id="cart-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[80] opacity-0 pointer-events-none transition-opacity duration-300"></div>
+    <div id="cart-drawer" class="fixed right-0 top-0 h-full w-full max-w-md bg-[#0a0a0a] z-[90] translate-x-full transition-transform duration-500 ease-in-out p-8 flex flex-col">
+        <div class="flex justify-between items-center mb-10">
+            <h3 class="text-2xl font-black italic">KERANJANG</h3>
+            <button id="cart-close" class="text-2xl hover:text-[#e11d48] transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div id="cart-items" class="flex-1 overflow-y-auto space-y-6 pr-2">
+            <!-- Cart items injected by JS -->
+        </div>
+        <div id="cart-footer" class="pt-8 border-t border-white/10 mt-6 opacity-0 transition-opacity">
+            <div class="flex justify-between text-xl font-bold mb-8">
+                <span>TOTAL</span>
+                <span id="cart-total" class="text-[#e11d48]">Rp 0</span>
+            </div>
+            <button id="checkout-btn" class="w-full bg-[#e11d48] text-white py-4 rounded-full font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all transform active:scale-95">
+                Checkout WhatsApp
+            </button>
+        </div>
+        <div id="cart-empty" class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none transition-opacity">
+            <i class="fa-solid fa-bag-shopping text-6xl text-white/5 mb-4"></i>
+            <p class="text-white/20 font-bold uppercase tracking-widest">Kosong</p>
+        </div>
+    </div>
+
+    <!-- Product Modal -->
+    <div id="modal-overlay" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[100] opacity-0 pointer-events-none transition-opacity duration-300"></div>
+    <div id="product-modal" class="fixed inset-0 z-[110] flex items-center justify-center p-4 md:p-10 pointer-events-none">
+        <div id="modal-content" class="bg-[#111] w-full max-w-6xl max-h-[90vh] rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row opacity-0 scale-95 transition-all duration-500 pointer-events-auto relative">
+            <button id="modal-close" class="absolute top-6 right-6 z-10 text-2xl bg-black/20 hover:bg-[#e11d48] w-12 h-12 rounded-full flex items-center justify-center transition-all">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="w-full md:w-1/2 h-[40vh] md:h-auto relative bg-[#0a0a0a]">
+                <img id="modal-main-img" src="" alt="" class="w-full h-full object-cover">
+                <div id="modal-gallery" class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3 p-2 bg-black/40 backdrop-blur rounded-2xl">
+                    <!-- Thumbnails injected by JS -->
+                </div>
+            </div>
+
+            <div class="w-full md:w-1/2 p-8 md:p-12 overflow-y-auto flex flex-col">
+                <div id="modal-category" class="text-[#e11d48] font-bold uppercase tracking-[0.2em] text-xs mb-2"></div>
+                <h3 id="modal-title" class="text-4xl md:text-5xl font-black italic mb-4 uppercase tracking-tighter"></h3>
+                <p id="modal-price" class="text-2xl font-bold text-white mb-8"></p>
+
+                <div class="space-y-6 mb-10">
+                    <p id="modal-desc" class="text-white/60 leading-relaxed font-light"></p>
+                    <div id="modal-specs" class="grid grid-cols-2 gap-4 text-xs uppercase tracking-widest">
+                        <!-- Specs injected by JS -->
+                    </div>
+                </div>
+
+                <div class="mt-auto grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <button id="modal-add-to-cart" class="bg-white text-black py-4 rounded-full font-black uppercase tracking-widest hover:bg-[#e11d48] hover:text-white transition-all transform active:scale-95">
+                        Tambah Keranjang
+                    </button>
+                    <button id="modal-buy-wa" class="bg-[#25d366] text-white py-4 rounded-full font-black uppercase tracking-widest hover:opacity-80 transition-all flex items-center justify-center gap-2 transform active:scale-95">
+                        <i class="fa-brands fa-whatsapp text-lg"></i> Beli Sekarang
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer id="footer" class="bg-black py-24 px-6 md:px-12 border-t border-white/5">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16">
+            <div class="lg:col-span-2">
+                <a href="#" class="text-3xl font-black tracking-tighter mb-6 block">
+                    TOPIKU <span class="text-[#e11d48]">TOPIMU</span>
+                </a>
+                <p class="text-white/40 max-w-md leading-relaxed mb-8">
+                    Elevasi gaya harian Anda dengan koleksi topi kurasi kami. Didesain untuk mereka yang menghargai kualitas, detail, dan karakter yang kuat.
+                </p>
+                <div class="flex gap-6 text-2xl">
+                    <a href="#" class="hover:text-[#e11d48] transition-colors"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="hover:text-[#e11d48] transition-colors"><i class="fa-brands fa-tiktok"></i></a>
+                    <a href="#" class="hover:text-[#e11d48] transition-colors"><i class="fa-brands fa-facebook"></i></a>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="font-black uppercase tracking-widest text-sm mb-8 text-[#e11d48]">Navigasi</h4>
+                <ul class="space-y-4 text-white/40 font-medium">
+                    <li><a href="#" class="hover:text-white transition-colors">Beranda</a></li>
+                    <li><a href="#koleksi" class="hover:text-white transition-colors">Koleksi</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Cara Pemesanan</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">FAQ</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="font-black uppercase tracking-widest text-sm mb-8 text-[#e11d48]">Kontak</h4>
+                <ul class="space-y-4 text-white/40 font-medium">
+                    <li class="flex items-start gap-3">
+                        <i class="fa-solid fa-location-dot mt-1 text-[#e11d48]"></i>
+                        <span>Banten, Indonesia</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <i class="fa-solid fa-phone text-[#e11d48]"></i>
+                        <span>+62 889 7326 2022</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <i class="fa-solid fa-envelope text-[#e11d48]"></i>
+                        <span>machie8910@gmail.com</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto mt-24 pt-8 border-t border-white/5 text-center text-white/20 text-xs uppercase tracking-widest">
+            &copy; 2023 Topiku Topimu. All Rights Reserved.
+        </div>
+    </footer>
+
+    <script id="main-script">
+        const CONFIG = {
+            brandName: "Topiku Topimu",
+            waNumber: "6288973262022",
+            products: [
+                {
+                    id: 1,
+                    nama: "Classic Snapback",
+                    harga: 150000,
+                    kategori: "Snapback",
+                    deskripsi: "Topi snapback klasik dengan desain minimalis namun elegan. Cocok untuk penggunaan sehari-hari maupun acara kasual.",
+                    specs: {
+                        bahan: "Cotton Twill",
+                        ukuran: "All Size",
+                        fit: "Structured"
+                    },
+                    gambar: [
+                        "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1572307480813-ceb0e59d8325?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1556306535-0f09a537f0a3?q=80&w=1000&auto=format&fit=crop"
+                    ]
+                },
+                {
+                    id: 2,
+                    nama: "Urban Beanie",
+                    harga: 120000,
+                    kategori: "Beanie",
+                    deskripsi: "Beanie rajut hangat dengan material lembut yang tidak gatal di kulit. Pilihan tepat untuk cuaca dingin.",
+                    specs: {
+                        bahan: "Acrylic Knit",
+                        ukuran: "Stretch",
+                        fit: "Unstructured"
+                    },
+                    gambar: [
+                        "https://images.unsplash.com/photo-1575425186775-b8de9a427e67?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1521119989659-a83eee488004?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1459156212016-c812468e2115?q=80&w=1000&auto=format&fit=crop"
+                    ]
+                },
+                {
+                    id: 3,
+                    nama: "Trucker Mesh",
+                    harga: 135000,
+                    kategori: "Trucker",
+                    deskripsi: "Topi trucker dengan jaring di bagian belakang untuk sirkulasi udara maksimal.",
+                    specs: {
+                        bahan: "Polyester Mesh",
+                        ukuran: "Adjustable",
+                        fit: "Curved Brim"
+                    },
+                    gambar: [
+                        "https://images.unsplash.com/photo-1521369909029-2afed882baee?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1611601322175-ef8ec8c85f01?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1534215754734-18e55d13e346?q=80&w=1000&auto=format&fit=crop"
+                    ]
+                },
+                {
+                    id: 4,
+                    nama: "Vintage Dad Hat",
+                    harga: 145000,
+                    kategori: "Dad Hat",
+                    deskripsi: "Topi bergaya vintage dengan kesan 'washed' yang memberikan karakter unik.",
+                    specs: {
+                        bahan: "Washed Cotton",
+                        ukuran: "All Size",
+                        fit: "Low Profile"
+                    },
+                    gambar: [
+                        "https://images.unsplash.com/photo-1596455607563-ad6193f76b17?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1556306535-0f09a537f0a3?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1572307480813-ceb0e59d8325?q=80&w=1000&auto=format&fit=crop"
+                    ]
+                },
+                {
+                    id: 5,
+                    nama: "Explorer Bucket",
+                    harga: 160000,
+                    kategori: "Bucket Hat",
+                    deskripsi: "Topi bucket yang trendi dan serbaguna, memberikan perlindungan maksimal dari sinar matahari.",
+                    specs: {
+                        bahan: "Canvas Cotton",
+                        ukuran: "M/L",
+                        fit: "Wide Brim"
+                    },
+                    gambar: [
+                        "https://images.unsplash.com/photo-1618354691792-d1d42acfd860?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1621072156002-e2fcced0b170?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1618354691792-d1d42acfd860?q=80&w=1000&auto=format&fit=crop"
+                    ]
+                },
+                {
+                    id: 6,
+                    nama: "Classic Fedora",
+                    harga: 250000,
+                    kategori: "Fedora",
+                    deskripsi: "Sentuhan klasik untuk penampilan formal maupun semi-formal.",
+                    specs: {
+                        bahan: "Wool Felt",
+                        ukuran: "58cm",
+                        fit: "Stiff Brim"
+                    },
+                    gambar: [
+                        "https://images.unsplash.com/photo-1514327605112-b887c0e61c0a?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1517423568366-8b83523034fd?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1514327605112-b887c0e61c0a?q=80&w=1000&auto=format&fit=crop"
+                    ]
+                }
+            ]
+        };
+
+        let cart = JSON.parse(localStorage.getItem('tktm_cart')) || [];
+
+        function formatIDR(amount) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(amount);
+        }
+
+        function renderProducts(productsToRender = CONFIG.products) {
+            const grid = document.getElementById('product-grid');
+            const noResults = document.getElementById('no-results');
+            grid.innerHTML = '';
+
+            if (productsToRender.length === 0) {
+                noResults.classList.remove('hidden');
+            } else {
+                noResults.classList.add('hidden');
+                productsToRender.forEach(product => {
+                    const card = document.createElement('div');
+                    card.className = 'product-card bg-[#111] rounded-3xl overflow-hidden shadow-lg group cursor-pointer';
+                    card.onclick = () => openModalById(product.id);
+
+                    card.innerHTML = `
+                        <div class="relative aspect-square overflow-hidden">
+                            <img src="${product.gambar[0]}" alt="${product.nama}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                <span class="bg-white text-black font-black py-2 px-6 rounded-full text-xs uppercase tracking-widest translate-y-4 group-hover:translate-y-0 transition-transform">Detail</span>
+                            </div>
+                            <div class="absolute top-4 left-4 bg-black/60 backdrop-blur py-1 px-3 rounded-full text-[10px] font-bold uppercase tracking-widest">
+                                ${product.kategori}
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h4 class="text-lg font-black uppercase tracking-tight mb-2 truncate">${product.nama}</h4>
+                            <p class="text-[#e11d48] font-bold">${formatIDR(product.harga)}</p>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            }
+        }
+
+        // --- Navigation ---
+        const menuToggle = document.getElementById('menu-toggle');
+        const menuClose = document.getElementById('menu-close');
+        const mobileDrawer = document.getElementById('mobile-drawer');
+        const mobileDrawerOverlay = document.getElementById('mobile-drawer-overlay');
+        const navbar = document.getElementById('navbar');
+
+        function toggleMenu(show) {
+            if (show) {
+                mobileDrawer.classList.remove('-translate-x-full');
+                mobileDrawerOverlay.classList.replace('opacity-0', 'opacity-100');
+                mobileDrawerOverlay.classList.remove('pointer-events-none');
+            } else {
+                mobileDrawer.classList.add('-translate-x-full');
+                mobileDrawerOverlay.classList.replace('opacity-100', 'opacity-0');
+                mobileDrawerOverlay.classList.add('pointer-events-none');
+            }
+        }
+
+        menuToggle.onclick = () => toggleMenu(true);
+        menuClose.onclick = () => toggleMenu(false);
+        mobileDrawerOverlay.onclick = () => toggleMenu(false);
+        document.querySelectorAll('.mobile-link').forEach(link => {
+            link.onclick = () => toggleMenu(false);
+        });
+
+        window.onscroll = () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('bg-black/80', 'backdrop-blur-md', 'py-3');
+                navbar.classList.remove('py-4');
+            } else {
+                navbar.classList.remove('bg-black/80', 'backdrop-blur-md', 'py-3');
+                navbar.classList.add('py-4');
+            }
+        };
+
+        // --- Search ---
+        const searchInput = document.getElementById('product-search');
+        const searchInputMobile = document.getElementById('product-search-mobile');
+
+        function handleSearch(e) {
+            const query = e.target.value.toLowerCase();
+            const filtered = CONFIG.products.filter(p =>
+                p.nama.toLowerCase().includes(query) ||
+                p.kategori.toLowerCase().includes(query)
+            );
+            renderProducts(filtered);
+        }
+
+        searchInput.oninput = handleSearch;
+        searchInputMobile.oninput = handleSearch;
+
+        // --- Cart Logic ---
+        const cartToggle = document.getElementById('cart-toggle');
+        const cartClose = document.getElementById('cart-close');
+        const cartDrawer = document.getElementById('cart-drawer');
+        const cartOverlay = document.getElementById('cart-overlay');
+        const cartItemsContainer = document.getElementById('cart-items');
+        const cartCount = document.getElementById('cart-count');
+        const cartTotal = document.getElementById('cart-total');
+        const cartFooter = document.getElementById('cart-footer');
+        const cartEmpty = document.getElementById('cart-empty');
+
+        function toggleCart(show) {
+            if (show) {
+                cartDrawer.classList.remove('translate-x-full');
+                cartOverlay.classList.replace('opacity-0', 'opacity-100');
+                cartOverlay.classList.remove('pointer-events-none');
+                renderCart();
+            } else {
+                cartDrawer.classList.add('translate-x-full');
+                cartOverlay.classList.replace('opacity-100', 'opacity-0');
+                cartOverlay.classList.add('pointer-events-none');
+            }
+        }
+
+        cartToggle.onclick = () => toggleCart(true);
+        cartClose.onclick = () => toggleCart(false);
+        cartOverlay.onclick = () => toggleCart(false);
+
+        function addToCart(productId) {
+            const product = CONFIG.products.find(p => p.id === productId);
+            const existing = cart.find(item => item.id === productId);
+
+            if (existing) {
+                existing.qty++;
+            } else {
+                cart.push({ ...product, qty: 1 });
+            }
+
+            updateCart();
+            showToast(`${product.nama} ditambahkan ke keranjang`);
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCart();
+        }
+
+        function updateCart() {
+            localStorage.setItem('tktm_cart', JSON.stringify(cart));
+            renderCart();
+        }
+
+        function renderCart() {
+            cartItemsContainer.innerHTML = '';
+            let total = 0;
+            let count = 0;
+
+            if (cart.length === 0) {
+                cartEmpty.classList.replace('opacity-0', 'opacity-100');
+                cartFooter.classList.replace('opacity-100', 'opacity-0');
+                cartCount.classList.add('opacity-0');
+            } else {
+                cartEmpty.classList.replace('opacity-100', 'opacity-0');
+                cartFooter.classList.replace('opacity-0', 'opacity-100');
+                cartCount.classList.remove('opacity-0');
+
+                cart.forEach(item => {
+                    total += item.harga * item.qty;
+                    count += item.qty;
+
+                    const itemEl = document.createElement('div');
+                    itemEl.className = 'flex gap-4 items-center animate-in';
+                    itemEl.innerHTML = `
+                        <img src="${item.gambar[0]}" class="w-20 h-20 object-cover rounded-2xl">
+                        <div class="flex-1">
+                            <h5 class="font-black text-sm uppercase">${item.nama}</h5>
+                            <p class="text-white/40 text-xs mt-1">${item.qty} x ${formatIDR(item.harga)}</p>
+                        </div>
+                        <button onclick="removeFromCart(${item.id})" class="text-white/20 hover:text-[#e11d48] transition-colors">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    `;
+                    cartItemsContainer.appendChild(itemEl);
+                });
+            }
+
+            cartTotal.innerText = formatIDR(total);
+            cartCount.innerText = count;
+        }
+
+        // --- Modal Logic ---
+        const modalOverlay = document.getElementById('modal-overlay');
+        const productModal = document.getElementById('product-modal');
+        const modalContent = document.getElementById('modal-content');
+        const modalClose = document.getElementById('modal-close');
+        const mainImg = document.getElementById('modal-main-img');
+        const gallery = document.getElementById('modal-gallery');
+
+        function openModalById(id) {
+            const product = CONFIG.products.find(p => p.id === id);
+            if (!product) return;
+
+            document.getElementById('modal-title').innerText = product.nama;
+            document.getElementById('modal-category').innerText = product.kategori;
+            document.getElementById('modal-price').innerText = formatIDR(product.harga);
+            document.getElementById('modal-desc').innerText = product.deskripsi;
+
+            const specsGrid = document.getElementById('modal-specs');
+            specsGrid.innerHTML = '';
+            Object.entries(product.specs).forEach(([key, value]) => {
+                const spec = document.createElement('div');
+                spec.innerHTML = `<span class="text-white/40 block mb-1">${key}</span><span class="font-bold">${value}</span>`;
+                specsGrid.appendChild(spec);
+            });
+
+            mainImg.src = product.gambar[0];
+            gallery.innerHTML = '';
+            product.gambar.forEach((img, index) => {
+                const thumb = document.createElement('button');
+                thumb.className = `w-12 h-12 rounded-xl overflow-hidden border-2 transition-all ${index === 0 ? 'border-[#e11d48]' : 'border-transparent opacity-50'}`;
+                thumb.innerHTML = `<img src="${img}" class="w-full h-full object-cover">`;
+                thumb.onclick = () => {
+                    mainImg.src = img;
+                    document.querySelectorAll('#modal-gallery button').forEach(b => {
+                        b.classList.replace('border-[#e11d48]', 'border-transparent');
+                        b.classList.add('opacity-50');
+                    });
+                    thumb.classList.replace('border-transparent', 'border-[#e11d48]');
+                    thumb.classList.remove('opacity-50');
+                };
+                gallery.appendChild(thumb);
+            });
+
+            document.getElementById('modal-add-to-cart').onclick = () => {
+                addToCart(product.id);
+                toggleModal(false);
+            };
+
+            document.getElementById('modal-buy-wa').onclick = () => {
+                const msg = `Halo ${CONFIG.brandName}, saya ingin memesan *${product.nama}* (${formatIDR(product.harga)}).`;
+                window.open(`https://wa.me/${CONFIG.waNumber}?text=${encodeURIComponent(msg)}`, '_blank');
+            };
+
+            toggleModal(true);
+        }
+
+        function toggleModal(show) {
+            if (show) {
+                modalOverlay.classList.replace('opacity-0', 'opacity-100');
+                modalOverlay.classList.remove('pointer-events-none');
+                modalContent.classList.replace('opacity-0', 'opacity-100');
+                modalContent.classList.replace('scale-95', 'scale-100');
+            } else {
+                modalOverlay.classList.replace('opacity-100', 'opacity-0');
+                modalOverlay.classList.add('pointer-events-none');
+                modalContent.classList.replace('opacity-100', 'opacity-0');
+                modalContent.classList.replace('scale-100', 'scale-95');
+            }
+        }
+
+        modalClose.onclick = () => toggleModal(false);
+        modalOverlay.onclick = () => toggleModal(false);
+
+        // --- Checkout ---
+        document.getElementById('checkout-btn').onclick = () => {
+            if (cart.length === 0) return;
+
+            let message = `Halo ${CONFIG.brandName}, saya ingin memesan:\n\n`;
+            let total = 0;
+            cart.forEach(item => {
+                message += `- ${item.nama} (${item.qty}x) : ${formatIDR(item.harga * item.qty)}\n`;
+                total += item.harga * item.qty;
+            });
+            message += `\n*TOTAL: ${formatIDR(total)}*\n\nMohon informasi selanjutnya. Terima kasih.`;
+
+            window.open(`https://wa.me/${CONFIG.waNumber}?text=${encodeURIComponent(message)}`, '_blank');
+
+            // Success feedback
+            cart = [];
+            updateCart();
+            toggleCart(false);
+            showToast("Pesanan dikirim! Keranjang dikosongkan.");
+        };
+
+        // --- Toast ---
+        function showToast(message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'bg-[#111] border-l-4 border-[#e11d48] text-white py-4 px-6 rounded-xl shadow-2xl flex items-center gap-4 animate-in pointer-events-auto';
+            toast.innerHTML = `
+                <i class="fa-solid fa-circle-check text-[#e11d48]"></i>
+                <span class="text-sm font-bold uppercase tracking-widest">${message}</span>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('opacity-0', '-translate-y-4');
+                setTimeout(() => toast.remove(), 500);
+            }, 3000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProducts();
+            renderCart();
+        });
+    </script>
 </body>
 </html>
