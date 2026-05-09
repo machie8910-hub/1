@@ -4,29 +4,170 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TKTM - Topiku Topimu</title>
-
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" href="style.css">
-
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-    </style>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-gray-50 text-gray-900">
-    <div id="root"></div>
+<body class="dark-theme">
+    <!-- Navbar -->
+    <nav class="navbar glass" id="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <button class="mobile-menu-btn" id="menuBtn" aria-label="Menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <a href="#" class="logo">TKTM</a>
+            </div>
 
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Cari topi...">
+                </div>
+            </div>
 
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+            <div class="nav-right">
+                <button class="cart-toggle" id="cartBtn" aria-label="Keranjang">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
 
-    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    <!-- Mobile Drawer -->
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+    <div class="drawer" id="drawer">
+        <div class="drawer-header">
+            <span class="logo">TKTM</span>
+            <button class="close-btn" id="closeDrawer">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <nav class="drawer-nav">
+            <a href="#" class="drawer-link active">Beranda</a>
+            <a href="#katalog" class="drawer-link">Koleksi</a>
+            <a href="#kontak" class="drawer-link">Hubungi Kami</a>
+        </nav>
+        <div class="drawer-footer">
+            <p>Topiku Topimu</p>
+        </div>
+    </div>
 
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg" id="heroBg"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content animate-in">
+            <h1 class="hero-title">TOPIKU TOPIMU</h1>
+            <p class="hero-subtitle">Koleksi eksklusif untuk melengkapi gaya harianmu. TKTM hadir untuk kenyamanan dan estetika.</p>
+            <div class="hero-actions">
+                <a href="#katalog" class="btn btn-primary">Jelajahi Koleksi</a>
+            </div>
+        </div>
+    </section>
 
-    <script type="text/babel" src="App.jsx"></script>
+    <!-- Recommendations -->
+    <section class="recommendations">
+        <div class="section-container">
+            <div class="section-header text-center">
+                <span class="badge">PILIHAN TERBAIK</span>
+                <h2 class="section-title">Rekomendasi Minggu Ini</h2>
+            </div>
+
+            <div class="slider-container" id="recSlider">
+                <div class="slider-track" id="sliderTrack">
+                    <!-- Recommended items will be injected here -->
+                </div>
+                <button class="slider-btn prev" id="prevSlide"><i class="fas fa-chevron-left"></i></button>
+                <button class="slider-btn next" id="nextSlide"><i class="fas fa-chevron-right"></i></button>
+                <div class="slider-dots" id="sliderDots"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Catalog -->
+    <section id="katalog" class="catalog">
+        <div class="section-container">
+            <div class="catalog-header">
+                <h2 class="section-title">Katalog Terbaru</h2>
+                <div class="catalog-search-mobile">
+                     <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInputMobile" placeholder="Cari topi...">
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-grid" id="productGrid">
+                <!-- Products will be injected here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="kontak">
+        <div class="section-container">
+            <div class="footer-grid">
+                <div class="footer-info">
+                    <h2 class="logo">TKTM</h2>
+                    <p>Topiku Topimu. Platform e-commerce topi nomor satu dengan kualitas tanpa kompromi.</p>
+                </div>
+                <div class="footer-contact">
+                    <h3>Kontak</h3>
+                    <ul class="contact-list">
+                        <li><i class="fas fa-phone"></i> +6288973262022</li>
+                        <li><i class="fas fa-envelope"></i> machie8910@gmail.com</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Banten, Indonesia</li>
+                    </ul>
+                </div>
+                <div class="footer-payment">
+                    <h3>Metode Pembayaran</h3>
+                    <p>Pembayaran dilakukan secara aman melalui konfirmasi WhatsApp dengan berbagai pilihan Bank dan E-Wallet.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 TKTM - Topiku Topimu. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-overlay" id="cartOverlay"></div>
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3>Keranjang</h3>
+            <button class="close-btn" id="closeCart">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <!-- Cart items will be injected here -->
+        </div>
+        <div class="cart-footer" id="cartFooter">
+            <div class="cart-total">
+                <span>Total</span>
+                <span id="totalPrice">Rp 0</span>
+            </div>
+            <button class="btn btn-primary btn-block" id="checkoutBtn">Checkout via WhatsApp</button>
+        </div>
+    </div>
+
+    <!-- Product Modal -->
+    <div class="modal-overlay" id="modalOverlay"></div>
+    <div class="modal" id="productModal">
+        <button class="modal-close" id="closeModal"><i class="fas fa-times"></i></button>
+        <div class="modal-container" id="modalContent">
+            <!-- Modal content will be injected here -->
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="script.js"></script>
 </body>
 </html>
