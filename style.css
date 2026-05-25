@@ -1,20 +1,21 @@
 @theme {
-  --color-brand: #1a1a1a;
-  --color-accent: #f59e0b;
+  --color-brand: #0a0a0a;
+  --color-accent: #e11d48;
 }
 
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #0a0a0a;
 }
 ::-webkit-scrollbar-thumb {
-  background: #ccc;
+  background: #262626;
   border-radius: 10px;
+  border: 2px solid #0a0a0a;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #888;
+  background: #e11d48;
 }
 
 .overflow-y-auto::-webkit-scrollbar {
@@ -36,19 +37,25 @@
 }
 
 .glass {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(10, 10, 10, 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.98) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
-.fade-in {
-  animation: fadeIn 0.5s ease-out forwards;
+.animate-in {
+  animation: fadeInScale 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .aspect-square {
@@ -61,5 +68,25 @@ html {
 
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  color: var(--color-brand);
+  color: #ffffff;
+  background-color: #0a0a0a;
 }
+
+/* Responsive utility classes with !important */
+.hidden-mobile {
+  @media (max-width: 768px) {
+    display: none !important;
+  }
+}
+
+.visible-mobile {
+  display: none !important;
+  @media (max-width: 768px) {
+    display: block !important;
+  }
+}
+
+.text-brand { color: var(--color-brand); }
+.bg-brand { background-color: var(--color-brand); }
+.text-accent { color: var(--color-accent); }
+.bg-accent { background-color: var(--color-accent); }
