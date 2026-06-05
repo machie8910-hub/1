@@ -1,204 +1,93 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AnimaHub - 3D Animation Streaming</title>
-    <link rel="stylesheet" href="style.css">
+    <title>TKTM | Premium Collection</title>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS v3.4.1 -->
+    <script src="https://cdn.tailwindcss.com/3.4.1"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: '#0a0a0a',
+                        accent: {
+                            DEFAULT: '#e11d48',
+                            hover: '#be123c',
+                            light: '#fb7185'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in-scale': 'fadeInScale 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeInScale: {
+                            '0%': { opacity: '0', transform: 'scale(0.95)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- React, ReactDOM, Babel, Framer Motion, Lucide -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style type="text/tailwindcss">
+        @layer base {
+            body {
+                @apply bg-brand text-white antialiased;
+            }
+            ::-webkit-scrollbar {
+                width: 8px;
+            }
+            ::-webkit-scrollbar-track {
+                @apply bg-brand;
+            }
+            ::-webkit-scrollbar-thumb {
+                @apply bg-zinc-800 rounded-full hover:bg-zinc-700 transition-colors;
+            }
+        }
+
+        .animate-in {
+            @apply animate-fade-in-scale;
+        }
+
+        /* Glassmorphism effects */
+        .glass {
+            @apply bg-zinc-900/80 backdrop-blur-md border border-white/10;
+        }
+    </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="logo">🎬 AnimaHub</div>
-            <ul class="nav-menu">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#player">Video</a></li>
-                <li><a href="#categories">Kategori</a></li>
-                <li><a href="#about">Tentang</a></li>
-            </ul>
-        </div>
-    </nav>
+    <div id="root"></div>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="hero-content">
-            <h1>Streaming Animasi 3D Terbaik</h1>
-            <p>Nonton koleksi video animasi 3D berkualitas tinggi dengan player profesional</p>
-            <a href="#player" class="cta-btn">Mulai Nonton</a>
-        </div>
-    </section>
+    <!-- Application Script -->
+    <script type="text/babel" src="App.jsx"></script>
 
-    <!-- Video Player Section -->
-    <section id="player" class="player-section">
-        <div class="container">
-            <div class="player-wrapper">
-                <video id="videoPlayer" class="video-player" controls>
-                    <source src="https://commondatastorage.googleapis.com/gtv-videos-library/sample/BigBuckBunny.mp4" type="video/mp4">
-                    Browser Anda tidak mendukung video player HTML5
-                </video>
-                <div class="player-controls">
-                    <button id="playBtn" class="control-btn play-btn" title="Play (Space)">▶️</button>
-                    <button id="pauseBtn" class="control-btn pause-btn" title="Pause (Space)">⏸️</button>
-                    <button id="fullscreenBtn" class="control-btn fullscreen-btn" title="Fullscreen (F)">🖥️</button>
-                </div>
-            </div>
-
-            <div class="video-info">
-                <h2 id="videoTitle">Big Buck Bunny - Animasi 3D Berkualitas Tinggi</h2>
-                <p id="videoDescription">Video animasi 3D klasik yang menampilkan karakter bunny lucu dengan grafis stunning. Sempurna untuk melihat kemampuan animasi 3D modern.</p>
-                <div class="video-stats">
-                    <span class="stat">👁️ 5.2M Views</span>
-                    <span class="stat">👍 420K Likes</span>
-                    <span class="stat">💬 12K Komentar</span>
-                </div>
-                <div class="video-meta">
-                    <span class="meta-item">⏱️ 9:56 menit</span>
-                    <span class="meta-item">📺 1080p HD</span>
-                    <span class="meta-item">⭐ Rating: 4.9/5</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Playlist Section -->
-    <section class="playlist-section">
-        <div class="container">
-            <h2>📋 Playlist 3D Animations</h2>
-            <div class="playlist-grid">
-                <div class="playlist-item" onclick="playVideo(0)">
-                    <div class="playlist-thumbnail">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 180'%3E%3Cdefs%3E%3ClinearGradient id='grad1' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:rgb(255,100,100)'/%3E%3Cstop offset='100%25' style='stop-color:rgb(255,50,50)'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='300' height='180' fill='url(%23grad1)'/%3E%3Ctext x='150' y='90' font-size='32' fill='white' text-anchor='middle' dominant-baseline='middle'%3E🐰 Bunny%3C/text%3E%3C/svg%3E" alt="Big Buck Bunny">
-                        <div class="play-overlay">▶️</div>
-                    </div>
-                    <h3>Big Buck Bunny</h3>
-                    <p class="duration">9:56</p>
-                </div>
-
-                <div class="playlist-item" onclick="playVideo(1)">
-                    <div class="playlist-thumbnail">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 180'%3E%3Cdefs%3E%3ClinearGradient id='grad2' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:rgb(100,150,255)'/%3E%3Cstop offset='100%25' style='stop-color:rgb(50,100,255)'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='300' height='180' fill='url(%23grad2)'/%3E%3Ctext x='150' y='90' font-size='32' fill='white' text-anchor='middle' dominant-baseline='middle'%3E🌍 Bar%3C/text%3E%3C/svg%3E" alt="Bar Animation">
-                        <div class="play-overlay">▶️</div>
-                    </div>
-                    <h3>Bar Animation Studio</h3>
-                    <p class="duration">12:34</p>
-                </div>
-
-                <div class="playlist-item" onclick="playVideo(2)">
-                    <div class="playlist-thumbnail">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 180'%3E%3Cdefs%3E%3ClinearGradient id='grad3' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:rgb(100,255,150)'/%3E%3Cstop offset='100%25' style='stop-color:rgb(50,200,100)'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='300' height='180' fill='url(%23grad3)'/%3E%3Ctext x='150' y='90' font-size='32' fill='white' text-anchor='middle' dominant-baseline='middle'%3E✨ 3D%3C/text%3E%3C/svg%3E" alt="3D Showcase">
-                        <div class="play-overlay">▶️</div>
-                    </div>
-                    <h3>3D Effects Showcase</h3>
-                    <p class="duration">8:45</p>
-                </div>
-
-                <div class="playlist-item" onclick="playVideo(3)">
-                    <div class="playlist-thumbnail">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 180'%3E%3Cdefs%3E%3ClinearGradient id='grad4' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:rgb(255,200,100)'/%3E%3Cstop offset='100%25' style='stop-color:rgb(255,150,50)'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='300' height='180' fill='url(%23grad4)'/%3E%3Ctext x='150' y='90' font-size='32' fill='white' text-anchor='middle' dominant-baseline='middle'%3E🎨 Design%3C/text%3E%3C/svg%3E" alt="Animation Design">
-                        <div class="play-overlay">▶️</div>
-                    </div>
-                    <h3>Animation Design Trends</h3>
-                    <p class="duration">11:22</p>
-                </div>
-
-                <div class="playlist-item" onclick="playVideo(4)">
-                    <div class="playlist-thumbnail">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 180'%3E%3Cdefs%3E%3ClinearGradient id='grad5' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:rgb(200,100,255)'/%3E%3Cstop offset='100%25' style='stop-color:rgb(150,50,255)'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='300' height='180' fill='url(%23grad5)'/%3E%3Ctext x='150' y='90' font-size='32' fill='white' text-anchor='middle' dominant-baseline='middle'%3E🚀 Motion%3C/text%3E%3C/svg%3E" alt="Motion Graphics">
-                        <div class="play-overlay">▶️</div>
-                    </div>
-                    <h3>Motion Graphics Masterclass</h3>
-                    <p class="duration">15:10</p>
-                </div>
-
-                <div class="playlist-item" onclick="playVideo(5)">
-                    <div class="playlist-thumbnail">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 180'%3E%3Cdefs%3E%3ClinearGradient id='grad6' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:rgb(255,100,200)'/%3E%3Cstop offset='100%25' style='stop-color:rgb(255,50,150)'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='300' height='180' fill='url(%23grad6)'/%3E%3Ctext x='150' y='90' font-size='32' fill='white' text-anchor='middle' dominant-baseline='middle'%3E💎 Premium%3C/text%3E%3C/svg%3E" alt="Premium Content">
-                        <div class="play-overlay">▶️</div>
-                    </div>
-                    <h3>Premium 3D Collection</h3>
-                    <p class="duration">10:33</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Categories Section -->
-    <section id="categories" class="categories-section">
-        <div class="container">
-            <h2>📂 Kategori</h2>
-            <div class="categories-grid">
-                <div class="category-card">
-                    <div class="category-icon">🐰</div>
-                    <h3>Character Animation</h3>
-                    <p>Animasi karakter 3D yang hidup dan ekspresif</p>
-                </div>
-                <div class="category-card">
-                    <div class="category-icon">🌍</div>
-                    <h3>Environment</h3>
-                    <p>Pemandangan dan lingkungan 3D yang memukau</p>
-                </div>
-                <div class="category-card">
-                    <div class="category-icon">✨</div>
-                    <h3>Effects</h3>
-                    <p>Efek visual dan particle effects profesional</p>
-                </div>
-                <div class="category-card">
-                    <div class="category-icon">🎨</div>
-                    <h3>Design</h3>
-                    <p>Desain grafis dan motion design terkini</p>
-                </div>
-                <div class="category-card">
-                    <div class="category-icon">🚀</div>
-                    <h3>Motion Graphics</h3>
-                    <p>Graphics motion yang dinamis dan menarik</p>
-                </div>
-                <div class="category-card">
-                    <div class="category-icon">💎</div>
-                    <h3>Premium Content</h3>
-                    <p>Konten premium eksklusif berkualitas tinggi</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="about-section">
-        <div class="container">
-            <h2>ℹ️ Tentang AnimaHub</h2>
-            <div class="about-content">
-                <div class="about-text">
-                    <p>AnimaHub adalah platform streaming untuk video animasi 3D berkualitas tinggi. Kami menyediakan koleksi terbesar dari video-video animasi profesional, dari character animation hingga motion graphics.</p>
-                    <p>Dengan player yang responsif dan fitur-fitur canggih, Anda dapat menikmati pengalaman menonton yang optimal di semua perangkat.</p>
-                    <h3>🎯 Fitur Unggulan:</h3>
-                    <ul>
-                        <li>✅ Video berkualitas HD & 4K</li>
-                        <li>✅ Player dengan kontrol penuh</li>
-                        <li>✅ Playlist yang mudah dikelola</li>
-                        <li>✅ Responsive design untuk semua perangkat</li>
-                        <li>✅ Keyboard shortcuts untuk navigasi cepat</li>
-                        <li>✅ Interface yang user-friendly</li>
-                    </ul>
-                    <h3>⌨️ Keyboard Shortcuts:</h3>
-                    <ul>
-                        <li><code>SPACE</code> - Play / Pause</li>
-                        <li><code>F</code> - Fullscreen</li>
-                        <li><code>← →</code> - Rewind / Forward 5 detik</li>
-                        <li><code>↑ ↓</code> - Naik / Turun Volume</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2026 AnimaHub - 3D Animation Streaming Platform. All rights reserved.</p>
-            <p>Video sources: <a href="https://pixabay.com" target="_blank">Pixabay</a> | <a href="https://commondatastorage.googleapis.com" target="_blank">Google Storage</a></p>
-        </div>
-    </footer>
-
-    <script src="script.js"></script>
+    <!-- Lucide Initialization Helper -->
+    <script>
+        // Global helper for React to trigger icon replacement
+        window.refreshIcons = () => {
+            if (window.lucide) {
+                window.lucide.createIcons();
+            }
+        };
+    </script>
 </body>
 </html>
