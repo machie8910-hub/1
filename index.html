@@ -1,204 +1,501 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AnimaHub - 3D Animation Streaming</title>
-    <link rel="stylesheet" href="style.css">
+    <title>TKTM - Toko Koleksi Terlengkap</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdn.tailwindcss.com/3.4.1"></script>
+    <script src="https://unpkg.com/lucide@0.294.0/dist/umd/lucide.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: '#0a0a0a',
+                        accent: '#e11d48',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'slide-left': 'slide-left 0.3s ease-out',
+                        'slide-right': 'slide-right 0.3s ease-out',
+                    },
+                    keyframes: {
+                        'slide-left': {
+                            '0%': { transform: 'translateX(100%)' },
+                            '100%': { transform: 'translateX(0)' },
+                        },
+                        'slide-right': {
+                            '0%': { transform: 'translateX(-100%)' },
+                            '100%': { transform: 'translateX(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer base {
+            body { @apply bg-brand text-white; }
+        }
+        @layer components {
+            .btn-accent { @apply bg-accent hover:bg-rose-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105 active:scale-95; }
+            .card-hover { @apply transition-all duration-500 hover:shadow-[0_0_20px_rgba(225,29,72,0.4)] hover:-translate-y-2; }
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { background: #e11d48; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #fb7185; }
+    </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="logo">🎬 AnimaHub</div>
-            <ul class="nav-menu">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#player">Video</a></li>
-                <li><a href="#categories">Kategori</a></li>
-                <li><a href="#about">Tentang</a></li>
-            </ul>
-        </div>
-    </nav>
+    <div id="root"></div>
+    <script type="text/javascript">
+        const { useState, useEffect, useMemo, useCallback } = React;
+        const h = React.createElement;
 
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="hero-content">
-            <h1>Streaming Animasi 3D Terbaik</h1>
-            <p>Nonton koleksi video animasi 3D berkualitas tinggi dengan player profesional</p>
-            <a href="#player" class="cta-btn">Mulai Nonton</a>
-        </div>
-    </section>
+        const CONFIG = {
+            whatsapp: "6288973262022",
+            brandName: "TKTM",
+            currency: "Rp",
+        };
 
-    <!-- Video Player Section -->
-    <section id="player" class="player-section">
-        <div class="container">
-            <div class="player-wrapper">
-                <video id="videoPlayer" class="video-player" controls>
-                    <source src="https://commondatastorage.googleapis.com/gtv-videos-library/sample/BigBuckBunny.mp4" type="video/mp4">
-                    Browser Anda tidak mendukung video player HTML5
-                </video>
-                <div class="player-controls">
-                    <button id="playBtn" class="control-btn play-btn" title="Play (Space)">▶️</button>
-                    <button id="pauseBtn" class="control-btn pause-btn" title="Pause (Space)">⏸️</button>
-                    <button id="fullscreenBtn" class="control-btn fullscreen-btn" title="Fullscreen (F)">🖥️</button>
-                </div>
-            </div>
+        const PRODUCTS = [
+            {
+                id: 1,
+                name: "Black Reaper Hoodie",
+                price: 750000,
+                category: "Koleksi",
+                images: [
+                    "https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&q=80&w=800",
+                    "https://images.unsplash.com/photo-1578587018452-892bacefd3f2?auto=format&fit=crop&q=80&w=800"
+                ],
+                description: "Hoodie premium dengan desain minimalis terinspirasi dari estetika dark anime. Bahan cotton fleece berkualitas tinggi."
+            },
+            {
+                id: 2,
+                name: "Cyber Punk Joggers",
+                price: 850000,
+                category: "Terbaru",
+                images: [
+                    "https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&q=80&w=800",
+                    "https://images.unsplash.com/photo-1584735175315-9d5df23860e6?auto=format&fit=crop&q=80&w=800"
+                ],
+                description: "Celana joggers dengan detail futuristik dan saku kargo fungsional. Cocok untuk tampilan urban techwear."
+            },
+            {
+                id: 3,
+                name: "Neon Soul Tee",
+                price: 350000,
+                category: "Koleksi",
+                images: [
+                    "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&q=80&w=800",
+                    "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&q=80&w=800"
+                ],
+                description: "Kaos oversize dengan sablon grafis neon yang mencolok. Menggunakan bahan katun combed 24s."
+            },
+            {
+                id: 4,
+                name: "Ronin Windbreaker",
+                price: 1250000,
+                category: "Terbaru",
+                images: [
+                    "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&q=80&w=800",
+                    "https://images.unsplash.com/photo-1544022613-e87ca75a784a?auto=format&fit=crop&q=80&w=800"
+                ],
+                description: "Jaket windbreaker tahan air dengan aksen reflektif. Desain terinspirasi dari armor samurai modern."
+            },
+            {
+                id: 5,
+                name: "Void Sling Bag",
+                price: 450000,
+                category: "Koleksi",
+                images: [
+                    "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&q=80&w=800",
+                    "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&q=80&w=800"
+                ],
+                description: "Tas selempang kompak dengan material cordura durable. Sempurna untuk membawa barang esensial harian."
+            },
+            {
+                id: 6,
+                name: "Zenith Beanie",
+                price: 250000,
+                category: "Terbaru",
+                images: [
+                    "https://images.unsplash.com/photo-1576871337632-b9aef4c17ab9?auto=format&fit=crop&q=80&w=800",
+                    "https://images.unsplash.com/photo-1605348532760-6753d2c43329?auto=format&fit=crop&q=80&w=800"
+                ],
+                description: "Beanie rajut dengan bordir logo TKTM yang halus. Menjaga kepala tetap hangat dengan gaya."
+            }
+        ];
 
-            <div class="video-info">
-                <h2 id="videoTitle">Big Buck Bunny - Animasi 3D Berkualitas Tinggi</h2>
-                <p id="videoDescription">Video animasi 3D klasik yang menampilkan karakter bunny lucu dengan grafis stunning. Sempurna untuk melihat kemampuan animasi 3D modern.</p>
-                <div class="video-stats">
-                    <span class="stat">👁️ 5.2M Views</span>
-                    <span class="stat">👍 420K Likes</span>
-                    <span class="stat">💬 12K Komentar</span>
-                </div>
-                <div class="video-meta">
-                    <span class="meta-item">⏱️ 9:56 menit</span>
-                    <span class="meta-item">📺 1080p HD</span>
-                    <span class="meta-item">⭐ Rating: 4.9/5</span>
-                </div>
-            </div>
-        </div>
-    </section>
+        const LucideIcon = ({ name, className = "" }) => {
+            const iconRef = React.useRef(null);
+            useEffect(() => {
+                const timeoutId = setTimeout(() => {
+                    if (window.lucide) {
+                        window.lucide.createIcons({
+                            nameAttr: 'data-lucide',
+                            attrs: { class: className }
+                        });
+                    }
+                }, 0);
+                return () => clearTimeout(timeoutId);
+            }, [name, className]);
+            return h('i', { 'data-lucide': name, className });
+        };
 
-    <!-- Playlist Section -->
-    <section class="playlist-section">
-        <div class="container">
-            <h2>📋 Playlist 3D Animations</h2>
-            <div class="playlist-grid">
-                <div class="playlist-item" onclick="playVideo(0)">
-                    <div class="playlist-thumbnail">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 180'%3E%3Cdefs%3E%3ClinearGradient id='grad1' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:rgb(255,100,100)'/%3E%3Cstop offset='100%25' style='stop-color:rgb(255,50,50)'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='300' height='180' fill='url(%23grad1)'/%3E%3Ctext x='150' y='90' font-size='32' fill='white' text-anchor='middle' dominant-baseline='middle'%3E🐰 Bunny%3C/text%3E%3C/svg%3E" alt="Big Buck Bunny">
-                        <div class="play-overlay">▶️</div>
-                    </div>
-                    <h3>Big Buck Bunny</h3>
-                    <p class="duration">9:56</p>
-                </div>
+        const Toast = ({ message, type = "success", onClose }) => {
+            useEffect(() => {
+                const timer = setTimeout(onClose, 3000);
+                return () => clearTimeout(timer);
+            }, [onClose]);
 
-                <div class="playlist-item" onclick="playVideo(1)">
-                    <div class="playlist-thumbnail">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 180'%3E%3Cdefs%3E%3ClinearGradient id='grad2' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:rgb(100,150,255)'/%3E%3Cstop offset='100%25' style='stop-color:rgb(50,100,255)'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='300' height='180' fill='url(%23grad2)'/%3E%3Ctext x='150' y='90' font-size='32' fill='white' text-anchor='middle' dominant-baseline='middle'%3E🌍 Bar%3C/text%3E%3C/svg%3E" alt="Bar Animation">
-                        <div class="play-overlay">▶️</div>
-                    </div>
-                    <h3>Bar Animation Studio</h3>
-                    <p class="duration">12:34</p>
-                </div>
+            return h('div', {
+                className: `fixed bottom-4 left-1/2 -translate-x-1/2 z-[100] px-6 py-3 rounded-full shadow-2xl flex items-center gap-3 bg-white text-brand animate-bounce`
+            }, [
+                h(LucideIcon, { name: type === 'success' ? 'check-circle' : 'info', className: "text-accent" }),
+                h('span', { className: "font-bold text-[#0a0a0a]" }, message)
+            ]);
+        };
 
-                <div class="playlist-item" onclick="playVideo(2)">
-                    <div class="playlist-thumbnail">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 180'%3E%3Cdefs%3E%3ClinearGradient id='grad3' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:rgb(100,255,150)'/%3E%3Cstop offset='100%25' style='stop-color:rgb(50,200,100)'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='300' height='180' fill='url(%23grad3)'/%3E%3Ctext x='150' y='90' font-size='32' fill='white' text-anchor='middle' dominant-baseline='middle'%3E✨ 3D%3C/text%3E%3C/svg%3E" alt="3D Showcase">
-                        <div class="play-overlay">▶️</div>
-                    </div>
-                    <h3>3D Effects Showcase</h3>
-                    <p class="duration">8:45</p>
-                </div>
+        const Navbar = ({ cartCount, onOpenCart, onOpenNav }) => {
+            return h('nav', { className: "sticky top-0 z-50 bg-brand/80 backdrop-blur-md border-b border-white/10" }, [
+                h('div', { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between" }, [
+                    h('div', { className: "flex items-center gap-4" }, [
+                        h('button', {
+                            onClick: onOpenNav,
+                            className: "sm:hidden text-white hover:text-accent p-2",
+                            'aria-label': "Menu Mobile"
+                        }, h(LucideIcon, { name: "menu" })),
+                        h('a', { href: "#", className: "text-2xl font-black tracking-tighter text-accent" }, "TKTM")
+                    ]),
+                    h('div', { className: "hidden sm:flex items-center gap-8 text-sm font-bold tracking-widest uppercase" }, [
+                        h('a', { href: "#koleksi", className: "hover:text-accent transition-colors" }, "Koleksi"),
+                        h('a', { href: "#terbaru", className: "hover:text-accent transition-colors" }, "Terbaru"),
+                        h('a', { href: "#kontak", className: "hover:text-accent transition-colors" }, "Kontak")
+                    ]),
+                    h('button', {
+                        onClick: onOpenCart,
+                        className: "relative p-2 text-white hover:text-accent transition-colors",
+                        'aria-label': "Keranjang"
+                    }, [
+                        h(LucideIcon, { name: "shopping-cart" }),
+                        cartCount > 0 && h('span', {
+                            className: "absolute top-0 right-0 bg-accent text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-bold"
+                        }, cartCount)
+                    ])
+                ])
+            ]);
+        };
 
-                <div class="playlist-item" onclick="playVideo(3)">
-                    <div class="playlist-thumbnail">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 180'%3E%3Cdefs%3E%3ClinearGradient id='grad4' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:rgb(255,200,100)'/%3E%3Cstop offset='100%25' style='stop-color:rgb(255,150,50)'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='300' height='180' fill='url(%23grad4)'/%3E%3Ctext x='150' y='90' font-size='32' fill='white' text-anchor='middle' dominant-baseline='middle'%3E🎨 Design%3C/text%3E%3C/svg%3E" alt="Animation Design">
-                        <div class="play-overlay">▶️</div>
-                    </div>
-                    <h3>Animation Design Trends</h3>
-                    <p class="duration">11:22</p>
-                </div>
+        const MobileDrawer = ({ isOpen, onClose }) => {
+            if (!isOpen) return null;
+            return h('div', { className: "fixed inset-0 z-[60]" }, [
+                h('div', { className: "absolute inset-0 bg-black/60 backdrop-blur-sm", onClick: onClose }),
+                h('div', { className: "absolute left-0 top-0 bottom-0 w-64 bg-brand border-r border-white/10 p-6 animate-slide-right" }, [
+                    h('div', { className: "flex justify-between items-center mb-10" }, [
+                        h('span', { className: "text-2xl font-black text-accent" }, "TKTM"),
+                        h('button', { onClick: onClose, 'aria-label': "Tutup Menu" }, h(LucideIcon, { name: "x" }))
+                    ]),
+                    h('div', { className: "flex flex-col gap-6 font-bold text-lg" }, [
+                        h('a', { href: "#koleksi", onClick: onClose, className: "hover:text-accent" }, "Koleksi"),
+                        h('a', { href: "#terbaru", onClick: onClose, className: "hover:text-accent" }, "Terbaru"),
+                        h('a', { href: "#kontak", onClick: onClose, className: "hover:text-accent" }, "Kontak")
+                    ])
+                ])
+            ]);
+        };
 
-                <div class="playlist-item" onclick="playVideo(4)">
-                    <div class="playlist-thumbnail">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 180'%3E%3Cdefs%3E%3ClinearGradient id='grad5' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:rgb(200,100,255)'/%3E%3Cstop offset='100%25' style='stop-color:rgb(150,50,255)'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='300' height='180' fill='url(%23grad5)'/%3E%3Ctext x='150' y='90' font-size='32' fill='white' text-anchor='middle' dominant-baseline='middle'%3E🚀 Motion%3C/text%3E%3C/svg%3E" alt="Motion Graphics">
-                        <div class="play-overlay">▶️</div>
-                    </div>
-                    <h3>Motion Graphics Masterclass</h3>
-                    <p class="duration">15:10</p>
-                </div>
+        const CartDrawer = ({ isOpen, onClose, items, onRemove, onUpdateQuantity, onCheckout }) => {
+            const total = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-                <div class="playlist-item" onclick="playVideo(5)">
-                    <div class="playlist-thumbnail">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 180'%3E%3Cdefs%3E%3ClinearGradient id='grad6' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:rgb(255,100,200)'/%3E%3Cstop offset='100%25' style='stop-color:rgb(255,50,150)'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='300' height='180' fill='url(%23grad6)'/%3E%3Ctext x='150' y='90' font-size='32' fill='white' text-anchor='middle' dominant-baseline='middle'%3E💎 Premium%3C/text%3E%3C/svg%3E" alt="Premium Content">
-                        <div class="play-overlay">▶️</div>
-                    </div>
-                    <h3>Premium 3D Collection</h3>
-                    <p class="duration">10:33</p>
-                </div>
-            </div>
-        </div>
-    </section>
+            if (!isOpen) return null;
 
-    <!-- Categories Section -->
-    <section id="categories" class="categories-section">
-        <div class="container">
-            <h2>📂 Kategori</h2>
-            <div class="categories-grid">
-                <div class="category-card">
-                    <div class="category-icon">🐰</div>
-                    <h3>Character Animation</h3>
-                    <p>Animasi karakter 3D yang hidup dan ekspresif</p>
-                </div>
-                <div class="category-card">
-                    <div class="category-icon">🌍</div>
-                    <h3>Environment</h3>
-                    <p>Pemandangan dan lingkungan 3D yang memukau</p>
-                </div>
-                <div class="category-card">
-                    <div class="category-icon">✨</div>
-                    <h3>Effects</h3>
-                    <p>Efek visual dan particle effects profesional</p>
-                </div>
-                <div class="category-card">
-                    <div class="category-icon">🎨</div>
-                    <h3>Design</h3>
-                    <p>Desain grafis dan motion design terkini</p>
-                </div>
-                <div class="category-card">
-                    <div class="category-icon">🚀</div>
-                    <h3>Motion Graphics</h3>
-                    <p>Graphics motion yang dinamis dan menarik</p>
-                </div>
-                <div class="category-card">
-                    <div class="category-icon">💎</div>
-                    <h3>Premium Content</h3>
-                    <p>Konten premium eksklusif berkualitas tinggi</p>
-                </div>
-            </div>
-        </div>
-    </section>
+            return h('div', { className: "fixed inset-0 z-[60]" }, [
+                h('div', { className: "absolute inset-0 bg-black/60 backdrop-blur-sm", onClick: onClose }),
+                h('div', { id: "cart-drawer", className: "absolute right-0 top-0 bottom-0 w-full max-w-md bg-brand border-l border-white/10 p-6 flex flex-col animate-slide-left" }, [
+                    h('div', { className: "flex justify-between items-center mb-8" }, [
+                        h('h2', { className: "text-xl font-black uppercase" }, "Keranjang"),
+                        h('button', { onClick: onClose, 'aria-label': "Tutup Keranjang" }, h(LucideIcon, { name: "x" }))
+                    ]),
+                    h('div', { className: "flex-1 overflow-y-auto space-y-6 pr-2" },
+                        items.length === 0 ? h('div', { className: "text-center py-20 text-white/50" }, "Keranjang kosong") :
+                        items.map(item => h('div', { key: item.id, className: "flex gap-4 group" }, [
+                            h('img', { src: item.image, className: "w-20 h-24 object-cover rounded-lg border border-white/10" }),
+                            h('div', { className: "flex-1" }, [
+                                h('h3', { className: "font-bold text-sm" }, item.name),
+                                h('p', { className: "text-accent text-sm font-bold mt-1" }, `${CONFIG.currency} ${item.price.toLocaleString()}`),
+                                h('div', { className: "flex items-center gap-4 mt-3" }, [
+                                    h('div', { className: "flex items-center border border-white/20 rounded" }, [
+                                        h('button', {
+                                            onClick: () => onUpdateQuantity(item.id, -1),
+                                            className: "px-2 hover:bg-white/10"
+                                        }, "-"),
+                                        h('span', { className: "px-3 text-sm" }, item.quantity),
+                                        h('button', {
+                                            onClick: () => onUpdateQuantity(item.id, 1),
+                                            className: "px-2 hover:bg-white/10"
+                                        }, "+")
+                                    ]),
+                                    h('button', {
+                                        onClick: () => onRemove(item.id),
+                                        className: "text-white/40 hover:text-accent transition-colors"
+                                    }, h(LucideIcon, { name: "trash-2", className: "w-4 h-4" }))
+                                ])
+                            ])
+                        ]))
+                    ),
+                    items.length > 0 && h('div', { className: "mt-8 pt-6 border-t border-white/10" }, [
+                        h('div', { className: "flex justify-between items-center mb-6" }, [
+                            h('span', { className: "font-bold text-white/60" }, "TOTAL"),
+                            h('span', { className: "text-2xl font-black" }, `${CONFIG.currency} ${total.toLocaleString()}`)
+                        ]),
+                        h('button', {
+                            onClick: onCheckout,
+                            className: "w-full btn-accent py-4 flex items-center justify-center gap-2"
+                        }, [
+                            h(LucideIcon, { name: "send" }),
+                            "CHECKOUT VIA WHATSAPP"
+                        ])
+                    ])
+                ])
+            ]);
+        };
 
-    <!-- About Section -->
-    <section id="about" class="about-section">
-        <div class="container">
-            <h2>ℹ️ Tentang AnimaHub</h2>
-            <div class="about-content">
-                <div class="about-text">
-                    <p>AnimaHub adalah platform streaming untuk video animasi 3D berkualitas tinggi. Kami menyediakan koleksi terbesar dari video-video animasi profesional, dari character animation hingga motion graphics.</p>
-                    <p>Dengan player yang responsif dan fitur-fitur canggih, Anda dapat menikmati pengalaman menonton yang optimal di semua perangkat.</p>
-                    <h3>🎯 Fitur Unggulan:</h3>
-                    <ul>
-                        <li>✅ Video berkualitas HD & 4K</li>
-                        <li>✅ Player dengan kontrol penuh</li>
-                        <li>✅ Playlist yang mudah dikelola</li>
-                        <li>✅ Responsive design untuk semua perangkat</li>
-                        <li>✅ Keyboard shortcuts untuk navigasi cepat</li>
-                        <li>✅ Interface yang user-friendly</li>
-                    </ul>
-                    <h3>⌨️ Keyboard Shortcuts:</h3>
-                    <ul>
-                        <li><code>SPACE</code> - Play / Pause</li>
-                        <li><code>F</code> - Fullscreen</li>
-                        <li><code>← →</code> - Rewind / Forward 5 detik</li>
-                        <li><code>↑ ↓</code> - Naik / Turun Volume</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
+        const ProductModal = ({ product, onClose, onAddToCart }) => {
+            const [activeImage, setActiveImage] = useState(0);
+            if (!product) return null;
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2026 AnimaHub - 3D Animation Streaming Platform. All rights reserved.</p>
-            <p>Video sources: <a href="https://pixabay.com" target="_blank">Pixabay</a> | <a href="https://commondatastorage.googleapis.com" target="_blank">Google Storage</a></p>
-        </div>
-    </footer>
+            return h('div', { className: "fixed inset-0 z-[70] flex items-center justify-center p-4" }, [
+                h('div', { className: "absolute inset-0 bg-black/90 backdrop-blur-md", onClick: onClose }),
+                h('div', { className: "relative bg-brand border border-white/10 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col md:flex-row" }, [
+                    h('button', {
+                        onClick: onClose,
+                        className: "absolute top-4 right-4 z-10 bg-brand/50 p-2 rounded-full hover:bg-accent transition-colors",
+                        'aria-label': "Tutup Detail"
+                    }, h(LucideIcon, { name: "x" })),
+                    h('div', { className: "w-full md:w-1/2 bg-white/5" }, [
+                        h('img', { src: product.images[activeImage], className: "w-full h-full object-cover aspect-[3/4]" }),
+                        product.images.length > 1 && h('div', { className: "flex gap-2 p-4 overflow-x-auto" },
+                            product.images.map((img, idx) => h('img', {
+                                key: idx,
+                                src: img,
+                                onClick: () => setActiveImage(idx),
+                                className: `w-16 h-20 object-cover rounded cursor-pointer transition-all ${activeImage === idx ? 'ring-2 ring-accent' : 'opacity-50 hover:opacity-100'}`
+                            }))
+                        )
+                    ]),
+                    h('div', { className: "w-full md:w-1/2 p-8 flex flex-col" }, [
+                        h('span', { className: "text-accent font-black tracking-widest text-sm uppercase mb-2" }, product.category),
+                        h('h2', { className: "text-3xl font-black mb-4" }, product.name),
+                        h('p', { className: "text-3xl font-bold text-accent mb-6" }, `${CONFIG.currency} ${product.price.toLocaleString()}`),
+                        h('p', { className: "text-white/70 leading-relaxed mb-8 flex-1" }, product.description),
+                        h('div', { className: "flex gap-4" }, [
+                            h('button', {
+                                onClick: () => {
+                                    onAddToCart(product);
+                                    onClose();
+                                },
+                                className: "flex-1 btn-accent py-4 flex items-center justify-center gap-2"
+                            }, [
+                                h(LucideIcon, { name: "shopping-bag" }),
+                                "TAMBAH KE KERANJANG"
+                            ]),
+                            h('button', {
+                                onClick: () => {
+                                    const message = `Halo, saya ingin beli ${product.name} - ${CONFIG.currency} ${product.price.toLocaleString()}`;
+                                    window.open(`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(message)}`, '_blank');
+                                },
+                                className: "px-6 border border-white/20 rounded-lg hover:bg-white/10 transition-colors",
+                                title: "Beli Sekarang"
+                            }, h(LucideIcon, { name: "zap" }))
+                        ])
+                    ])
+                ])
+            ]);
+        };
 
-    <script src="script.js"></script>
+        const App = () => {
+            const [cart, setCart] = useState([]);
+            const [selectedProduct, setSelectedProduct] = useState(null);
+            const [isCartOpen, setIsCartOpen] = useState(false);
+            const [isNavOpen, setIsNavOpen] = useState(false);
+            const [toast, setToast] = useState(null);
+
+            const addToCart = useCallback((product) => {
+                setCart(prev => {
+                    const existing = prev.find(item => item.id === product.id);
+                    if (existing) {
+                        return prev.map(item => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item);
+                    }
+                    return [...prev, { id: product.id, name: product.name, price: product.price, image: product.images[0], quantity: 1 }];
+                });
+                setToast(`Berhasil menambahkan ${product.name}`);
+            }, []);
+
+            const updateQuantity = (id, delta) => {
+                setCart(prev => prev.map(item => {
+                    if (item.id === id) {
+                        const newQty = Math.max(1, item.quantity + delta);
+                        return { ...item, quantity: newQty };
+                    }
+                    return item;
+                }));
+            };
+
+            const removeFromCart = (id) => {
+                setCart(prev => prev.filter(item => item.id !== id));
+            };
+
+            const checkout = () => {
+                const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                let message = `*PESANAN BARU - ${CONFIG.brandName}*\n\n`;
+                cart.forEach(item => {
+                    message += `- ${item.name} (x${item.quantity}): ${CONFIG.currency} ${(item.price * item.quantity).toLocaleString()}\n`;
+                });
+                message += `\n*TOTAL: ${CONFIG.currency} ${total.toLocaleString()}*`;
+
+                window.open(`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(message)}`, '_blank');
+                setCart([]);
+                setIsCartOpen(false);
+                setToast("Pembelian berhasil");
+            };
+
+            return h('div', { className: "min-h-screen flex flex-col font-sans" }, [
+                h(Navbar, {
+                    cartCount: cart.reduce((s, i) => s + i.quantity, 0),
+                    onOpenCart: () => setIsCartOpen(true),
+                    onOpenNav: () => setIsNavOpen(true)
+                }),
+
+                // Hero
+                h('section', { className: "relative h-[80vh] flex items-center justify-center overflow-hidden" }, [
+                    h('div', { className: "absolute inset-0 z-0" }, [
+                        h('img', {
+                            src: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=2000",
+                            className: "w-full h-full object-cover opacity-40 scale-110"
+                        }),
+                        h('div', { className: "absolute inset-0 bg-gradient-to-t from-brand via-brand/50 to-transparent" })
+                    ]),
+                    h('div', { className: "relative z-10 text-center px-4" }, [
+                        h('span', { className: "text-accent font-black tracking-[0.5em] uppercase text-sm mb-4 block animate-pulse" }, "The Next Era of Style"),
+                        h('h1', { className: "text-6xl md:text-8xl font-black tracking-tighter mb-6 italic" }, [
+                            "TOK", h('span', { className: "text-accent" }, "O"), " KOLEK", h('span', { className: "text-accent" }, "S"), "I"
+                        ]),
+                        h('p', { className: "max-w-2xl mx-auto text-lg text-white/70 mb-10 font-medium" }, "Koleksi streetwear eksklusif dengan estetika sinematik. Temukan gaya unikmu di sini."),
+                        h('a', {
+                            href: "#koleksi",
+                            className: "btn-accent px-10 py-4 text-lg inline-flex items-center gap-3"
+                        }, [
+                            "JELAJAHI SEKARANG",
+                            h(LucideIcon, { name: "arrow-right" })
+                        ])
+                    ])
+                ]),
+
+                // Product Sections
+                ["Koleksi", "Terbaru"].map(cat => h('section', {
+                    id: cat.toLowerCase(),
+                    key: cat,
+                    className: "py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full"
+                }, [
+                    h('div', { className: "flex items-end justify-between mb-12 border-l-4 border-accent pl-6" }, [
+                        h('div', {}, [
+                            h('span', { className: "text-accent font-bold uppercase tracking-widest text-xs" }, "Highlights"),
+                            h('h2', { className: "text-4xl font-black uppercase" }, cat)
+                        ]),
+                        h('a', { href: "#", className: "text-sm font-bold text-white/40 hover:text-white transition-colors" }, "LIHAT SEMUA")
+                    ]),
+                    h('div', { className: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" },
+                        PRODUCTS.filter(p => p.category === cat).map(product => h('div', {
+                            key: product.id,
+                            className: "group card-hover bg-white/5 rounded-2xl overflow-hidden border border-white/5"
+                        }, [
+                            h('div', {
+                                className: "relative aspect-[3/4] overflow-hidden cursor-pointer",
+                                onClick: () => setSelectedProduct(product)
+                            }, [
+                                h('img', {
+                                    src: product.images[0],
+                                    alt: product.name,
+                                    className: "w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                }),
+                                h('div', { className: "absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center" },
+                                    h('span', { className: "bg-white text-brand px-6 py-2 rounded-full font-bold text-sm" }, "LIHAT DETAIL")
+                                )
+                            ]),
+                            h('div', { className: "p-6" }, [
+                                h('div', { className: "flex justify-between items-start mb-2" }, [
+                                    h('h3', { className: "font-bold text-lg" }, product.name),
+                                    h('button', {
+                                        onClick: () => addToCart(product),
+                                        className: "p-2 bg-white/10 rounded-full hover:bg-accent transition-colors",
+                                        'aria-label': "Tambah produk ke keranjang"
+                                    }, h(LucideIcon, { name: "shopping-cart", className: "w-4 h-4" }))
+                                ]),
+                                h('p', { className: "text-accent font-black text-xl" }, `${CONFIG.currency} ${product.price.toLocaleString()}`)
+                            ])
+                        ]))
+                    )
+                ])),
+
+                // Footer
+                h('footer', { id: "kontak", className: "mt-auto bg-white/5 border-t border-white/10 py-16 px-4" }, [
+                    h('div', { className: "max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12" }, [
+                        h('div', {}, [
+                            h('span', { className: "text-3xl font-black text-accent mb-6 block" }, "TKTM"),
+                            h('p', { className: "text-white/50 leading-relaxed" }, "Toko koleksi terlengkap untuk kebutuhan gaya hidup modern dan futuristik. Berbasis di Indonesia, melayani pengiriman ke seluruh dunia.")
+                        ]),
+                        h('div', {}, [
+                            h('h4', { className: "font-black uppercase mb-6 tracking-widest" }, "Navigasi"),
+                            h('div', { className: "flex flex-col gap-3 text-white/50" }, [
+                                h('a', { href: "#", className: "hover:text-accent" }, "Home"),
+                                h('a', { href: "#koleksi", className: "hover:text-accent" }, "Koleksi"),
+                                h('a', { href: "#terbaru", className: "hover:text-accent" }, "Terbaru"),
+                                h('a', { href: "#kontak", className: "hover:text-accent" }, "Kontak")
+                            ])
+                        ]),
+                        h('div', {}, [
+                            h('h4', { className: "font-black uppercase mb-6 tracking-widest" }, "Hubungi Kami"),
+                            h('div', { className: "flex flex-col gap-3 text-white/50" }, [
+                                h('div', { className: "flex items-center gap-2" }, [h(LucideIcon, { name: "mail", className: "w-4 h-4" }), "info@tktm.shop"]),
+                                h('div', { className: "flex items-center gap-2" }, [h(LucideIcon, { name: "phone", className: "w-4 h-4" }), "+62 889 7326 2022"]),
+                                h('div', { className: "flex items-center gap-2" }, [h(LucideIcon, { name: "map-pin", className: "w-4 h-4" }), "Jakarta, Indonesia"])
+                            ])
+                        ])
+                    ]),
+                    h('div', { className: "max-w-7xl mx-auto mt-16 pt-8 border-t border-white/5 text-center text-white/30 text-xs font-bold tracking-widest" },
+                        `© ${new Date().getFullYear()} ${CONFIG.brandName}. ALL RIGHTS RESERVED.`
+                    )
+                ]),
+
+                h(MobileDrawer, { isOpen: isNavOpen, onClose: () => setIsNavOpen(false) }),
+                h(CartDrawer, {
+                    isOpen: isCartOpen,
+                    onClose: () => setIsCartOpen(false),
+                    items: cart,
+                    onRemove: removeFromCart,
+                    onUpdateQuantity: updateQuantity,
+                    onCheckout: checkout
+                }),
+                h(ProductModal, {
+                    product: selectedProduct,
+                    onClose: () => setSelectedProduct(null),
+                    onAddToCart: addToCart
+                }),
+                toast && h(Toast, { message: toast, onClose: () => setToast(null) })
+            ]);
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(h(App));
+    </script>
 </body>
 </html>
