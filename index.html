@@ -3,202 +3,510 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AnimaHub - 3D Animation Streaming</title>
-    <link rel="stylesheet" href="style.css">
+    <title>TKTM - Toko Koleksi Terlengkap</title>
+    <!-- React & ReactDOM UMD -->
+    <script src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+    <!-- Lucide Icons UMD -->
+    <script src="https://unpkg.com/lucide@0.294.0/dist/umd/lucide.min.js"></script>
+    <!-- Tailwind CSS 3.4.1 CDN -->
+    <script src="https://cdn.tailwindcss.com/3.4.1"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: '#0a0a0a',
+                        accent: '#e11d48', // anime-red
+                    },
+                    animation: {
+                        'slide-left': 'slideLeft 0.3s ease-out forwards',
+                        'slide-right': 'slideRight 0.3s ease-out forwards',
+                    },
+                    keyframes: {
+                        slideLeft: {
+                            '0%': { transform: 'translateX(100%)' },
+                            '100%': { transform: 'translateX(0)' },
+                        },
+                        slideRight: {
+                            '0%': { transform: 'translateX(-100%)' },
+                            '100%': { transform: 'translateX(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer base {
+            body {
+                @apply bg-brand text-white font-sans selection:bg-accent selection:text-white;
+            }
+            ::-webkit-scrollbar {
+                width: 8px;
+            }
+            ::-webkit-scrollbar-track {
+                @apply bg-brand;
+            }
+            ::-webkit-scrollbar-thumb {
+                @apply bg-zinc-800 rounded-full hover:bg-zinc-700 transition-colors;
+            }
+        }
+        .glass-panel {
+            @apply bg-zinc-900/80 backdrop-blur-md border border-zinc-800;
+        }
+    </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="logo">🎬 AnimaHub</div>
-            <ul class="nav-menu">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#player">Video</a></li>
-                <li><a href="#categories">Kategori</a></li>
-                <li><a href="#about">Tentang</a></li>
-            </ul>
-        </div>
-    </nav>
+    <div id="root"></div>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="hero-content">
-            <h1>Streaming Animasi 3D Terbaik</h1>
-            <p>Nonton koleksi video animasi 3D berkualitas tinggi dengan player profesional</p>
-            <a href="#player" class="cta-btn">Mulai Nonton</a>
-        </div>
-    </section>
+    <script type="text/javascript">
+        const { createElement: h, useState, useEffect, useMemo } = React;
 
-    <!-- Video Player Section -->
-    <section id="player" class="player-section">
-        <div class="container">
-            <div class="player-wrapper">
-                <video id="videoPlayer" class="video-player" controls>
-                    <source src="https://commondatastorage.googleapis.com/gtv-videos-library/sample/BigBuckBunny.mp4" type="video/mp4">
-                    Browser Anda tidak mendukung video player HTML5
-                </video>
-                <div class="player-controls">
-                    <button id="playBtn" class="control-btn play-btn" title="Play (Space)">▶️</button>
-                    <button id="pauseBtn" class="control-btn pause-btn" title="Pause (Space)">⏸️</button>
-                    <button id="fullscreenBtn" class="control-btn fullscreen-btn" title="Fullscreen (F)">🖥️</button>
-                </div>
-            </div>
+        const CONFIG = {
+            brandName: 'TKTM',
+            whatsappNumber: '6288973262022',
+            categories: ['Semua', 'Apparel', 'Accessories', 'Collectibles'],
+            products: [
+                {
+                    id: 1,
+                    name: 'Premium Hoodie - Night Raid',
+                    price: 850000,
+                    category: 'Apparel',
+                    description: 'Hoodie premium dengan bahan katun berat, menampilkan bordir presisi tinggi bertema Night Raid.',
+                    images: [
+                        'https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&q=80&w=800',
+                        'https://images.unsplash.com/photo-1578587018452-892bacefd3f2?auto=format&fit=crop&q=80&w=800'
+                    ]
+                },
+                {
+                    id: 2,
+                    name: 'Cyberpunk Katana Umbrella',
+                    price: 450000,
+                    category: 'Accessories',
+                    description: 'Payung dengan gagang berbentuk tsuka katana, tahan angin dan bergaya futuristik.',
+                    images: [
+                        'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?auto=format&fit=crop&q=80&w=800',
+                        'https://images.unsplash.com/photo-1519781542704-957ff19eff00?auto=format&fit=crop&q=80&w=800'
+                    ]
+                },
+                {
+                    id: 3,
+                    name: 'Limited Edition Figure - Raven',
+                    price: 2750000,
+                    category: 'Collectibles',
+                    description: 'Figure skala 1/7 dengan detail cat yang luar biasa dan pose dinamis.',
+                    images: [
+                        'https://images.unsplash.com/photo-1542435503-956c469947f6?auto=format&fit=crop&q=80&w=800',
+                        'https://images.unsplash.com/photo-1559124564-169828854747?auto=format&fit=crop&q=80&w=800'
+                    ]
+                },
+                {
+                    id: 4,
+                    name: 'Techwear Joggers - V4',
+                    price: 650000,
+                    category: 'Apparel',
+                    description: 'Celana jogger multifungsi dengan banyak saku dan bahan tahan air.',
+                    images: [
+                        'https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?auto=format&fit=crop&q=80&w=800',
+                        'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&q=80&w=800'
+                    ]
+                },
+                {
+                    id: 5,
+                    name: 'Tactical Chest Rig',
+                    price: 320000,
+                    category: 'Accessories',
+                    description: 'Aksesori pelengkap gaya techwear yang fungsional dan estetis.',
+                    images: [
+                        'https://images.unsplash.com/photo-1514332921149-b8fb7c05fa1e?auto=format&fit=crop&q=80&w=800',
+                        'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?auto=format&fit=crop&q=80&w=800'
+                    ]
+                },
+                {
+                    id: 6,
+                    name: 'Art Print - Neo Tokyo',
+                    price: 150000,
+                    category: 'Collectibles',
+                    description: 'Poster berkualitas galeri dengan desain futuristik kota Tokyo.',
+                    images: [
+                        'https://images.unsplash.com/photo-1540959733332-e94e270b4d82?auto=format&fit=crop&q=80&w=800',
+                        'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&q=80&w=800'
+                    ]
+                }
+            ]
+        };
 
-            <div class="video-info">
-                <h2 id="videoTitle">Big Buck Bunny - Animasi 3D Berkualitas Tinggi</h2>
-                <p id="videoDescription">Video animasi 3D klasik yang menampilkan karakter bunny lucu dengan grafis stunning. Sempurna untuk melihat kemampuan animasi 3D modern.</p>
-                <div class="video-stats">
-                    <span class="stat">👁️ 5.2M Views</span>
-                    <span class="stat">👍 420K Likes</span>
-                    <span class="stat">💬 12K Komentar</span>
-                </div>
-                <div class="video-meta">
-                    <span class="meta-item">⏱️ 9:56 menit</span>
-                    <span class="meta-item">📺 1080p HD</span>
-                    <span class="meta-item">⭐ Rating: 4.9/5</span>
-                </div>
-            </div>
-        </div>
-    </section>
+        const LucideIcon = ({ name, size = 24, className = "" }) => {
+            const iconRef = React.useRef(null);
 
-    <!-- Playlist Section -->
-    <section class="playlist-section">
-        <div class="container">
-            <h2>📋 Playlist 3D Animations</h2>
-            <div class="playlist-grid">
-                <div class="playlist-item" onclick="playVideo(0)">
-                    <div class="playlist-thumbnail">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 180'%3E%3Cdefs%3E%3ClinearGradient id='grad1' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:rgb(255,100,100)'/%3E%3Cstop offset='100%25' style='stop-color:rgb(255,50,50)'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='300' height='180' fill='url(%23grad1)'/%3E%3Ctext x='150' y='90' font-size='32' fill='white' text-anchor='middle' dominant-baseline='middle'%3E🐰 Bunny%3C/text%3E%3C/svg%3E" alt="Big Buck Bunny">
-                        <div class="play-overlay">▶️</div>
-                    </div>
-                    <h3>Big Buck Bunny</h3>
-                    <p class="duration">9:56</p>
-                </div>
+            useEffect(() => {
+                let timeout;
+                if (window.lucide) {
+                    timeout = setTimeout(() => {
+                        window.lucide.createIcons();
+                    }, 0);
+                }
+                return () => clearTimeout(timeout);
+            }, [name]);
 
-                <div class="playlist-item" onclick="playVideo(1)">
-                    <div class="playlist-thumbnail">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 180'%3E%3Cdefs%3E%3ClinearGradient id='grad2' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:rgb(100,150,255)'/%3E%3Cstop offset='100%25' style='stop-color:rgb(50,100,255)'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='300' height='180' fill='url(%23grad2)'/%3E%3Ctext x='150' y='90' font-size='32' fill='white' text-anchor='middle' dominant-baseline='middle'%3E🌍 Bar%3C/text%3E%3C/svg%3E" alt="Bar Animation">
-                        <div class="play-overlay">▶️</div>
-                    </div>
-                    <h3>Bar Animation Studio</h3>
-                    <p class="duration">12:34</p>
-                </div>
+            return h('i', {
+                'data-lucide': name,
+                ref: iconRef,
+                className: className,
+                style: { width: size, height: size }
+            });
+        };
 
-                <div class="playlist-item" onclick="playVideo(2)">
-                    <div class="playlist-thumbnail">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 180'%3E%3Cdefs%3E%3ClinearGradient id='grad3' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:rgb(100,255,150)'/%3E%3Cstop offset='100%25' style='stop-color:rgb(50,200,100)'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='300' height='180' fill='url(%23grad3)'/%3E%3Ctext x='150' y='90' font-size='32' fill='white' text-anchor='middle' dominant-baseline='middle'%3E✨ 3D%3C/text%3E%3C/svg%3E" alt="3D Showcase">
-                        <div class="play-overlay">▶️</div>
-                    </div>
-                    <h3>3D Effects Showcase</h3>
-                    <p class="duration">8:45</p>
-                </div>
+        const App = () => {
+            const [cart, setCart] = useState([]);
+            const [isCartOpen, setIsCartOpen] = useState(false);
+            const [selectedProduct, setSelectedProduct] = useState(null);
+            const [category, setCategory] = useState('Semua');
+            const [searchQuery, setSearchQuery] = useState('');
+            const [toasts, setToasts] = useState([]);
 
-                <div class="playlist-item" onclick="playVideo(3)">
-                    <div class="playlist-thumbnail">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 180'%3E%3Cdefs%3E%3ClinearGradient id='grad4' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:rgb(255,200,100)'/%3E%3Cstop offset='100%25' style='stop-color:rgb(255,150,50)'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='300' height='180' fill='url(%23grad4)'/%3E%3Ctext x='150' y='90' font-size='32' fill='white' text-anchor='middle' dominant-baseline='middle'%3E🎨 Design%3C/text%3E%3C/svg%3E" alt="Animation Design">
-                        <div class="play-overlay">▶️</div>
-                    </div>
-                    <h3>Animation Design Trends</h3>
-                    <p class="duration">11:22</p>
-                </div>
+            const filteredProducts = useMemo(() => {
+                return CONFIG.products.filter(p => {
+                    const matchesCategory = category === 'Semua' || p.category === category;
+                    const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
+                    return matchesCategory && matchesSearch;
+                });
+            }, [category, searchQuery]);
 
-                <div class="playlist-item" onclick="playVideo(4)">
-                    <div class="playlist-thumbnail">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 180'%3E%3Cdefs%3E%3ClinearGradient id='grad5' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:rgb(200,100,255)'/%3E%3Cstop offset='100%25' style='stop-color:rgb(150,50,255)'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='300' height='180' fill='url(%23grad5)'/%3E%3Ctext x='150' y='90' font-size='32' fill='white' text-anchor='middle' dominant-baseline='middle'%3E🚀 Motion%3C/text%3E%3C/svg%3E" alt="Motion Graphics">
-                        <div class="play-overlay">▶️</div>
-                    </div>
-                    <h3>Motion Graphics Masterclass</h3>
-                    <p class="duration">15:10</p>
-                </div>
+            const addToCart = (product) => {
+                setCart(prev => {
+                    const existing = prev.find(item => item.id === product.id);
+                    if (existing) {
+                        return prev.map(item => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item);
+                    }
+                    return [...prev, { ...product, quantity: 1 }];
+                });
+                addToast(`${product.name} ditambahkan ke keranjang`);
+            };
 
-                <div class="playlist-item" onclick="playVideo(5)">
-                    <div class="playlist-thumbnail">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 180'%3E%3Cdefs%3E%3ClinearGradient id='grad6' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:rgb(255,100,200)'/%3E%3Cstop offset='100%25' style='stop-color:rgb(255,50,150)'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='300' height='180' fill='url(%23grad6)'/%3E%3Ctext x='150' y='90' font-size='32' fill='white' text-anchor='middle' dominant-baseline='middle'%3E💎 Premium%3C/text%3E%3C/svg%3E" alt="Premium Content">
-                        <div class="play-overlay">▶️</div>
-                    </div>
-                    <h3>Premium 3D Collection</h3>
-                    <p class="duration">10:33</p>
-                </div>
-            </div>
-        </div>
-    </section>
+            const removeFromCart = (id) => {
+                setCart(prev => prev.filter(item => item.id !== id));
+            };
 
-    <!-- Categories Section -->
-    <section id="categories" class="categories-section">
-        <div class="container">
-            <h2>📂 Kategori</h2>
-            <div class="categories-grid">
-                <div class="category-card">
-                    <div class="category-icon">🐰</div>
-                    <h3>Character Animation</h3>
-                    <p>Animasi karakter 3D yang hidup dan ekspresif</p>
-                </div>
-                <div class="category-card">
-                    <div class="category-icon">🌍</div>
-                    <h3>Environment</h3>
-                    <p>Pemandangan dan lingkungan 3D yang memukau</p>
-                </div>
-                <div class="category-card">
-                    <div class="category-icon">✨</div>
-                    <h3>Effects</h3>
-                    <p>Efek visual dan particle effects profesional</p>
-                </div>
-                <div class="category-card">
-                    <div class="category-icon">🎨</div>
-                    <h3>Design</h3>
-                    <p>Desain grafis dan motion design terkini</p>
-                </div>
-                <div class="category-card">
-                    <div class="category-icon">🚀</div>
-                    <h3>Motion Graphics</h3>
-                    <p>Graphics motion yang dinamis dan menarik</p>
-                </div>
-                <div class="category-card">
-                    <div class="category-icon">💎</div>
-                    <h3>Premium Content</h3>
-                    <p>Konten premium eksklusif berkualitas tinggi</p>
-                </div>
-            </div>
-        </div>
-    </section>
+            const updateQuantity = (id, delta) => {
+                setCart(prev => prev.map(item => {
+                    if (item.id === id) {
+                        const newQty = Math.max(1, item.quantity + delta);
+                        return { ...item, quantity: newQty };
+                    }
+                    return item;
+                }));
+            };
 
-    <!-- About Section -->
-    <section id="about" class="about-section">
-        <div class="container">
-            <h2>ℹ️ Tentang AnimaHub</h2>
-            <div class="about-content">
-                <div class="about-text">
-                    <p>AnimaHub adalah platform streaming untuk video animasi 3D berkualitas tinggi. Kami menyediakan koleksi terbesar dari video-video animasi profesional, dari character animation hingga motion graphics.</p>
-                    <p>Dengan player yang responsif dan fitur-fitur canggih, Anda dapat menikmati pengalaman menonton yang optimal di semua perangkat.</p>
-                    <h3>🎯 Fitur Unggulan:</h3>
-                    <ul>
-                        <li>✅ Video berkualitas HD & 4K</li>
-                        <li>✅ Player dengan kontrol penuh</li>
-                        <li>✅ Playlist yang mudah dikelola</li>
-                        <li>✅ Responsive design untuk semua perangkat</li>
-                        <li>✅ Keyboard shortcuts untuk navigasi cepat</li>
-                        <li>✅ Interface yang user-friendly</li>
-                    </ul>
-                    <h3>⌨️ Keyboard Shortcuts:</h3>
-                    <ul>
-                        <li><code>SPACE</code> - Play / Pause</li>
-                        <li><code>F</code> - Fullscreen</li>
-                        <li><code>← →</code> - Rewind / Forward 5 detik</li>
-                        <li><code>↑ ↓</code> - Naik / Turun Volume</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
+            const addToast = (message) => {
+                const id = Date.now();
+                setToasts(prev => [...prev, { id, message }]);
+                setTimeout(() => {
+                    setToasts(prev => prev.filter(t => t.id !== id));
+                }, 3000);
+            };
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2026 AnimaHub - 3D Animation Streaming Platform. All rights reserved.</p>
-            <p>Video sources: <a href="https://pixabay.com" target="_blank">Pixabay</a> | <a href="https://commondatastorage.googleapis.com" target="_blank">Google Storage</a></p>
-        </div>
-    </footer>
+            const checkoutWhatsApp = () => {
+                if (cart.length === 0) return;
+                const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                let message = `Halo TKTM, saya ingin memesan:\n\n`;
+                cart.forEach(item => {
+                    message += `- ${item.name} (${item.quantity}x) - Rp ${item.price.toLocaleString('id-ID')}\n`;
+                });
+                message += `\nTotal: Rp ${total.toLocaleString('id-ID')}\n\nTerima kasih!`;
+                window.open(`https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
+            };
 
-    <script src="script.js"></script>
+            return h('div', { className: 'min-h-screen' },
+                // Navbar
+                h('nav', { className: 'sticky top-0 z-50 glass-panel border-b border-zinc-800 px-4 py-3' },
+                    h('div', { className: 'max-w-7xl mx-auto flex items-center justify-between' },
+                        h('div', { className: 'flex items-center gap-8' },
+                            h('h1', { className: 'text-2xl font-black tracking-tighter text-accent' }, CONFIG.brandName),
+                            h('div', { className: 'hidden md:flex items-center gap-6' },
+                                CONFIG.categories.map(cat => h('button', {
+                                    key: cat,
+                                    onClick: () => setCategory(cat),
+                                    className: `text-sm font-medium transition-colors ${category === cat ? 'text-accent' : 'text-zinc-400 hover:text-white'}`
+                                }, cat))
+                            )
+                        ),
+                        h('div', { className: 'flex items-center gap-4' },
+                            h('div', { className: 'relative hidden sm:block' },
+                                h(LucideIcon, { name: 'search', size: 18, className: 'absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500' }),
+                                h('input', {
+                                    type: 'text',
+                                    placeholder: 'Cari koleksi...',
+                                    value: searchQuery,
+                                    onChange: (e) => setSearchQuery(e.target.value),
+                                    className: 'bg-zinc-900 border border-zinc-800 rounded-full py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-accent w-64'
+                                })
+                            ),
+                            h('button', {
+                                onClick: () => setIsCartOpen(true),
+                                className: 'relative p-2 hover:bg-zinc-800 rounded-full transition-colors',
+                                'aria-label': 'Keranjang'
+                            },
+                                h(LucideIcon, { name: 'shopping-cart' }),
+                                cart.length > 0 && h('span', {
+                                    className: 'absolute top-0 right-0 bg-accent text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-brand'
+                                }, cart.reduce((sum, item) => sum + item.quantity, 0))
+                            )
+                        )
+                    )
+                ),
+
+                // Hero
+                h('section', { className: 'relative h-[70vh] flex items-center justify-center overflow-hidden' },
+                    h('div', { className: 'absolute inset-0 z-0' },
+                        h('img', {
+                            src: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=1920',
+                            className: 'w-full h-full object-cover opacity-40'
+                        }),
+                        h('div', { className: 'absolute inset-0 bg-gradient-to-t from-brand via-transparent to-transparent' })
+                    ),
+                    h('div', { className: 'relative z-10 text-center px-4 max-w-3xl' },
+                        h('span', { className: 'text-accent font-bold tracking-widest uppercase text-sm' }, 'Limited Edition Drops'),
+                        h('h2', { className: 'text-5xl md:text-7xl font-black mt-4 mb-6 leading-none' }, 'LEVEL UP YOUR ', h('span', { className: 'text-accent' }, 'STYLE')),
+                        h('p', { className: 'text-zinc-400 text-lg md:text-xl mb-8' }, 'Koleksi apparel dan aksesoris terinspirasi dari kultur anime dan techwear. Kualitas premium, stok terbatas.'),
+                        h('a', {
+                            href: '#koleksi',
+                            className: 'inline-block bg-accent text-white px-8 py-4 rounded-full font-bold hover:scale-105 transition-transform'
+                        }, 'Lihat Koleksi')
+                    )
+                ),
+
+                // Product Grid
+                h('main', { id: 'koleksi', className: 'max-w-7xl mx-auto px-4 py-16' },
+                    h('div', { className: 'flex items-center justify-between mb-12' },
+                        h('h3', { className: 'text-3xl font-black' }, 'TRENDING ', h('span', { className: 'text-zinc-500' }, 'NOW')),
+                        h('div', { className: 'md:hidden' },
+                            h('select', {
+                                value: category,
+                                onChange: (e) => setCategory(e.target.value),
+                                className: 'bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-2 text-sm'
+                            }, CONFIG.categories.map(cat => h('option', { key: cat, value: cat }, cat)))
+                        )
+                    ),
+                    h('div', { className: 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8' },
+                        filteredProducts.map(product => h('div', {
+                            key: product.id,
+                            className: 'group glass-panel rounded-2xl overflow-hidden hover:border-accent transition-colors'
+                        },
+                            h('div', {
+                                onClick: () => setSelectedProduct(product),
+                                className: 'aspect-[4/5] relative overflow-hidden cursor-pointer'
+                            },
+                                h('img', {
+                                    src: product.images[0],
+                                    alt: product.name,
+                                    className: 'w-full h-full object-cover transition-transform duration-500 group-hover:scale-110'
+                                }),
+                                h('div', { className: 'absolute inset-0 bg-brand/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center' },
+                                    h('span', { className: 'bg-white text-black px-6 py-2 rounded-full font-bold text-sm transform translate-y-4 group-hover:translate-y-0 transition-transform' }, 'Quick View')
+                                )
+                            ),
+                            h('div', { className: 'p-6' },
+                                h('div', { className: 'flex justify-between items-start mb-4' },
+                                    h('div', null,
+                                        h('p', { className: 'text-zinc-500 text-xs uppercase font-bold tracking-widest' }, product.category),
+                                        h('h4', {
+                                            onClick: () => setSelectedProduct(product),
+                                            className: 'text-xl font-bold mt-1 cursor-pointer hover:text-accent transition-colors'
+                                        }, product.name)
+                                    ),
+                                    h('p', { className: 'text-accent font-black' }, `Rp ${product.price.toLocaleString('id-ID')}`)
+                                ),
+                                h('button', {
+                                    onClick: () => addToCart(product),
+                                    className: 'w-full py-3 bg-zinc-800 hover:bg-accent text-white font-bold rounded-xl transition-colors flex items-center justify-center gap-2'
+                                },
+                                    h(LucideIcon, { name: 'plus', size: 20 }),
+                                    'Tambah ke Keranjang'
+                                )
+                            )
+                        ))
+                    ),
+                    filteredProducts.length === 0 && h('div', { className: 'text-center py-20' },
+                        h(LucideIcon, { name: 'package-open', size: 48, className: 'mx-auto text-zinc-700 mb-4' }),
+                        h('p', { className: 'text-zinc-500' }, 'Produk tidak ditemukan.')
+                    )
+                ),
+
+                // Footer
+                h('footer', { className: 'bg-zinc-950 border-t border-zinc-900 py-12 px-4' },
+                    h('div', { className: 'max-w-7xl mx-auto flex flex-col md:flex-row justify-between gap-12' },
+                        h('div', { className: 'max-w-sm' },
+                            h('h4', { className: 'text-2xl font-black text-accent mb-4' }, CONFIG.brandName),
+                            h('p', { className: 'text-zinc-500 leading-relaxed' }, 'Pusat koleksi anime dan techwear terbaik di Indonesia. Kami menghadirkan produk berkualitas tinggi untuk meningkatkan style Anda.'),
+                            h('div', { className: 'flex gap-4 mt-6' },
+                                ['instagram', 'twitter', 'facebook'].map(icon => h('button', { key: icon, className: 'p-2 border border-zinc-800 rounded-full hover:border-accent hover:text-accent transition-all' }, h(LucideIcon, { name: icon, size: 18 })))
+                            )
+                        ),
+                        h('div', { className: 'grid grid-cols-2 gap-12' },
+                            h('div', null,
+                                h('h5', { className: 'font-bold mb-4' }, 'Toko'),
+                                h('ul', { className: 'space-y-2 text-zinc-500' },
+                                    ['Koleksi Terbaru', 'Best Seller', 'Promo'].map(item => h('li', { key: item, className: 'hover:text-white cursor-pointer' }, item))
+                                )
+                            ),
+                            h('div', null,
+                                h('h5', { className: 'font-bold mb-4' }, 'Bantuan'),
+                                h('ul', { className: 'space-y-2 text-zinc-500' },
+                                    ['Kontak', 'Pengiriman', 'Panduan Ukuran'].map(item => h('li', { key: item, className: 'hover:text-white cursor-pointer' }, item))
+                                )
+                            )
+                        )
+                    ),
+                    h('div', { className: 'max-w-7xl mx-auto mt-12 pt-8 border-t border-zinc-900 text-center text-zinc-600 text-sm' },
+                        `© ${new Date().getFullYear()} ${CONFIG.brandName}. All rights reserved.`
+                    )
+                ),
+
+                // Cart Drawer
+                isCartOpen && h('div', { className: 'fixed inset-0 z-[60] flex justify-end' },
+                    h('div', {
+                        onClick: () => setIsCartOpen(false),
+                        className: 'absolute inset-0 bg-brand/80 backdrop-blur-sm'
+                    }),
+                    h('div', { className: 'relative w-full max-w-md bg-zinc-950 h-full shadow-2xl flex flex-col animate-slide-left' },
+                        h('div', { className: 'p-6 border-b border-zinc-900 flex items-center justify-between' },
+                            h('h4', { className: 'text-xl font-black flex items-center gap-2' },
+                                h(LucideIcon, { name: 'shopping-bag' }),
+                                'KERANJANG'
+                            ),
+                            h('button', {
+                                onClick: () => setIsCartOpen(false),
+                                className: 'p-2 hover:bg-zinc-900 rounded-full',
+                                'aria-label': 'Tutup Keranjang'
+                            }, h(LucideIcon, { name: 'x' }))
+                        ),
+                        h('div', { className: 'flex-1 overflow-y-auto p-6 space-y-6' },
+                            cart.length === 0 ? h('div', { className: 'text-center py-20' },
+                                h(LucideIcon, { name: 'shopping-cart', size: 48, className: 'mx-auto text-zinc-800 mb-4' }),
+                                h('p', { className: 'text-zinc-500' }, 'Keranjang Anda kosong.')
+                            ) : cart.map(item => h('div', { key: item.id, className: 'flex gap-4' },
+                                h('img', { src: item.images[0], className: 'w-20 h-24 object-cover rounded-lg' }),
+                                h('div', { className: 'flex-1' },
+                                    h('div', { className: 'flex justify-between' },
+                                        h('h5', { className: 'font-bold text-sm' }, item.name),
+                                        h('button', { onClick: () => removeFromCart(item.id), className: 'text-zinc-600 hover:text-accent' }, h(LucideIcon, { name: 'trash-2', size: 16 }))
+                                    ),
+                                    h('p', { className: 'text-accent font-black text-sm mt-1' }, `Rp ${item.price.toLocaleString('id-ID')}`),
+                                    h('div', { className: 'flex items-center gap-3 mt-3' },
+                                        h('button', {
+                                            onClick: () => updateQuantity(item.id, -1),
+                                            className: 'w-8 h-8 rounded-full border border-zinc-800 flex items-center justify-center hover:bg-zinc-900'
+                                        }, '-'),
+                                        h('span', { className: 'font-bold' }, item.quantity),
+                                        h('button', {
+                                            onClick: () => updateQuantity(item.id, 1),
+                                            className: 'w-8 h-8 rounded-full border border-zinc-800 flex items-center justify-center hover:bg-zinc-900'
+                                        }, '+')
+                                    )
+                                )
+                            ))
+                        ),
+                        cart.length > 0 && h('div', { className: 'p-6 border-t border-zinc-900 space-y-4' },
+                            h('div', { className: 'flex justify-between items-center text-lg' },
+                                h('span', { className: 'font-bold' }, 'Total'),
+                                h('span', { className: 'font-black text-accent' }, `Rp ${cart.reduce((sum, item) => sum + (item.price * item.quantity), 0).toLocaleString('id-ID')}`)
+                            ),
+                            h('button', {
+                                onClick: checkoutWhatsApp,
+                                className: 'w-full py-4 bg-accent text-white font-black rounded-xl hover:scale-[1.02] transition-transform flex items-center justify-center gap-2'
+                            },
+                                h(LucideIcon, { name: 'message-circle' }),
+                                'CHECKOUT VIA WHATSAPP'
+                            )
+                        )
+                    )
+                ),
+
+                // Product Modal
+                selectedProduct && h(() => {
+                    const [activeImg, setActiveImg] = useState(selectedProduct.images[0]);
+                    return h('div', { className: 'fixed inset-0 z-[70] flex items-center justify-center p-4' },
+                        h('div', {
+                            onClick: () => setSelectedProduct(null),
+                            className: 'absolute inset-0 bg-brand/90 backdrop-blur-md'
+                        }),
+                        h('div', { className: 'relative w-full max-w-4xl glass-panel rounded-3xl overflow-hidden flex flex-col md:flex-row max-h-[90vh]' },
+                            h('button', {
+                                onClick: () => setSelectedProduct(null),
+                                className: 'absolute top-4 right-4 z-10 p-2 bg-brand/50 hover:bg-brand rounded-full'
+                            }, h(LucideIcon, { name: 'x' })),
+                            h('div', { className: 'md:w-1/2 bg-zinc-900 flex flex-col' },
+                                h('div', { className: 'flex-1 overflow-hidden' },
+                                    h('img', {
+                                        src: activeImg,
+                                        className: 'w-full h-full object-cover'
+                                    })
+                                ),
+                                h('div', { className: 'p-4 flex gap-4 bg-zinc-950' },
+                                    selectedProduct.images.map(img => h('button', {
+                                        key: img,
+                                        onClick: () => setActiveImg(img),
+                                        className: `w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${activeImg === img ? 'border-accent' : 'border-transparent opacity-50 hover:opacity-100'}`
+                                    }, h('img', { src: img, className: 'w-full h-full object-cover' })))
+                                )
+                            ),
+                            h('div', { className: 'md:w-1/2 p-8 overflow-y-auto' },
+                                h('p', { className: 'text-accent font-bold text-sm tracking-widest uppercase' }, selectedProduct.category),
+                                h('h3', { className: 'text-3xl font-black mt-2' }, selectedProduct.name),
+                                h('p', { className: 'text-2xl font-black text-white mt-4' }, `Rp ${selectedProduct.price.toLocaleString('id-ID')}`),
+                                h('div', { className: 'mt-8' },
+                                    h('h5', { className: 'font-bold mb-2' }, 'Deskripsi'),
+                                    h('p', { className: 'text-zinc-500 leading-relaxed' }, selectedProduct.description)
+                                ),
+                                h('div', { className: 'mt-8 space-y-4' },
+                                    h('button', {
+                                        onClick: () => {
+                                            addToCart(selectedProduct);
+                                            setSelectedProduct(null);
+                                        },
+                                        className: 'w-full py-4 bg-white text-black font-black rounded-xl hover:bg-zinc-200 transition-colors'
+                                    }, 'TAMBAH KE KERANJANG'),
+                                    h('button', {
+                                        onClick: () => {
+                                            const total = selectedProduct.price;
+                                            const message = `Halo TKTM, saya ingin beli langsung:\n- ${selectedProduct.name} (1x) - Rp ${total.toLocaleString('id-ID')}\n\nTerima kasih!`;
+                                            window.open(`https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
+                                        },
+                                        className: 'w-full py-4 border-2 border-accent text-accent font-black rounded-xl hover:bg-accent hover:text-white transition-all'
+                                    }, 'BELI SEKARANG')
+                                )
+                            )
+                        )
+                    );
+                }),
+
+                // Toasts
+                h('div', { className: 'fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] flex flex-col gap-2' },
+                    toasts.map(toast => h('div', {
+                        key: toast.id,
+                        className: 'bg-white text-[#0a0a0a] px-6 py-3 rounded-full font-bold shadow-2xl animate-bounce-in flex items-center gap-2'
+                    },
+                        h(LucideIcon, { name: 'check-circle', size: 18 }),
+                        toast.message
+                    ))
+                )
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(h(App));
+    </script>
+    <style>
+        @keyframes bounce-in {
+            0% { transform: translateY(100%) scale(0.9); opacity: 0; }
+            50% { transform: translateY(-10%) scale(1.05); }
+            100% { transform: translateY(0) scale(1); opacity: 1; }
+        }
+        .animate-bounce-in {
+            animation: bounce-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+    </style>
 </body>
 </html>
